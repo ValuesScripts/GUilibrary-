@@ -1,10 +1,4 @@
---[[
-                          Neverlose.cc UI Library
-    Author: 4lpaca
-	License: MIT
-    Discord
-    Other-Projects: https://4lpaca.win
-]]
+--never lose
 
 do
 	local Constant = 'L'..'P'..'H'..'_NO_VIRTUALIZE';
@@ -5916,37 +5910,94 @@ end
 end)));
 
 -- Mobile toggle button (outside the listener)
+-- Mobile toggle button (square-rounded, draggable, with "R" logo)
 if NeverLose.IsMobile then
     local ToggleButton = Instance.new("ImageButton")
     ToggleButton.Name = "MobileToggle"
     ToggleButton.Parent = NeverLose.ScreenGui
     ToggleButton.AnchorPoint = Vector2.new(1, 1)
-    ToggleButton.Position = UDim2.new(1, -15, 1, -15)
-    ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-    ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
-    ToggleButton.BackgroundTransparency = 0.2
+    ToggleButton.Position = UDim2.new(1, -20, 1, -20)   -- offset from bottom‑right
+    ToggleButton.Size = UDim2.new(0, 55, 0, 55)          -- square
+    ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    ToggleButton.BackgroundTransparency = 0.15
     ToggleButton.BorderSizePixel = 0
     ToggleButton.ZIndex = 200
+    ToggleButton.AutoButtonColor = false                -- keep color consistent
 
+    -- Rounded corners (square‑rounded)
     local corner = Instance.new("UICorner", ToggleButton)
-    corner.CornerRadius = UDim.new(1, 0)
+    corner.CornerRadius = UDim.new(0, 12)               -- 12px rounding
 
+    -- Subtle border
+    local stroke = Instance.new("UIStroke", ToggleButton)
+    stroke.Color = Color3.fromRGB(255, 255, 255)
+    stroke.Transparency = 0.5
+    stroke.Thickness = 1
+
+    -- "R" logo as a TextLabel
     local icon = Instance.new("TextLabel", ToggleButton)
     icon.AnchorPoint = Vector2.new(0.5, 0.5)
     icon.Position = UDim2.new(0.5, 0, 0.5, 0)
     icon.Size = UDim2.new(1, 0, 1, 0)
     icon.BackgroundTransparency = 1
-    icon.FontFace = NeverLose.BuiltInBold
-    icon.Text = "menu"
+    icon.Font = Enum.Font.GothamBold
+    icon.Text = "R"
     icon.TextColor3 = Color3.fromRGB(255, 255, 255)
     icon.TextSize = 30
-    icon.TextTransparency = 0.2
+    icon.TextTransparency = 0.1
 
+    -- ---------- Drag logic ----------
+    local dragToggle = false
+    local dragStart = nil
+    local startPos = nil
+    local hasDragged = false
+    local dragThreshold = 5   -- pixels to differentiate drag from tap
+
+    ToggleButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = ToggleButton.Position
+            hasDragged = false
+        end
+    end)
+
+    ToggleButton.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = false
+        end
+    end)
+
+    -- Update position while dragging
+    UserInputService.InputChanged:Connect(function(input)
+        if dragToggle and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+            local delta = input.Position - dragStart
+            if delta.Magnitude > dragThreshold then
+                hasDragged = true
+            end
+            local newPos = UDim2.new(
+                startPos.X.Scale, startPos.X.Offset + delta.X,
+                startPos.Y.Scale, startPos.Y.Offset + delta.Y
+            )
+            ToggleButton.Position = newPos
+        end
+    end)
+
+    -- Click/tap only if NOT a drag
     ToggleButton.MouseButton1Click:Connect(function()
-        Window:ToggleInterface()
+        if not hasDragged then
+            Window:ToggleInterface()
+        end
+        hasDragged = false
+    end)
+
+    ToggleButton.TouchTap:Connect(function()
+        if not hasDragged then
+            Window:ToggleInterface()
+        end
+        hasDragged = false
     end)
 end
-
 	function Window:ToggleInterface()
 		Window.Signal:SetValue(not Window.Signal:GetValue());
 
