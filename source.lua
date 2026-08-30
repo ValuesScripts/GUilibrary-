@@ -2,7 +2,7 @@
                           Neverlose.cc UI Library
     Author: 4lpaca
 	License: MIT
-    Discord: https://arceney.win/discord
+    Discord
     Other-Projects: https://4lpaca.win
 ]]
 
