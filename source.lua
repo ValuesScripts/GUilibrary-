@@ -1,4 +1,4 @@
---never lose v1.1
+--never lose v0.1
 
 do
 	local Constant = 'L'..'P'..'H'..'_NO_VIRTUALIZE';
@@ -5909,15 +5909,14 @@ end
     end;
 end)));
 
-
--- Mobile toggle button (rounded square, draggable, hold-to-toggle, with "R" logo)
+-- Mobile toggle button (rounded square, draggable, click to toggle, with "R" logo)
 if NeverLose.IsMobile then
     local ToggleButton = Instance.new("ImageButton")
     ToggleButton.Name = "MobileToggle"
     ToggleButton.Parent = NeverLose.ScreenGui
-    ToggleButton.AnchorPoint = Vector2.new(0.5, 0.5)   -- easier to position under finger
+    ToggleButton.AnchorPoint = Vector2.new(0.5, 0.5)
     ToggleButton.Position = UDim2.new(1, -40, 1, -40)   -- bottom‑right corner
-    ToggleButton.Size = UDim2.new(0, 55, 0, 55)          -- square
+    ToggleButton.Size = UDim2.new(0, 55, 0, 55)
     ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
     ToggleButton.BackgroundTransparency = 0.15
     ToggleButton.BorderSizePixel = 0
@@ -5946,14 +5945,11 @@ if NeverLose.IsMobile then
     icon.TextSize = 30
     icon.TextTransparency = 0.1
 
-    -- ---------- Drag & Hold logic ----------
+    -- ---------- Drag & Tap logic ----------
     local isDragging = false
-    local isHolding = false
-    local holdTimer = nil
-    local startPos = nil
+    local dragStart = nil
     local offset = Vector2.new(0, 0)          -- offset from button center to touch point
     local dragThreshold = 8                   -- pixels to differentiate drag from tap
-    local holdDuration = 0.3                  -- seconds to hold before toggling
 
     local function updatePosition(input)
         local newPos = UDim2.new(
@@ -5965,39 +5961,23 @@ if NeverLose.IsMobile then
 
     ToggleButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            -- Calculate offset from button center to touch point
+            -- Store offset so the button stays under the finger
             local absPos = ToggleButton.AbsolutePosition
             local center = absPos + ToggleButton.AbsoluteSize / 2
             offset = input.Position - center
 
-            startPos = input.Position
+            dragStart = input.Position
             isDragging = false
-            isHolding = false
-
-            -- Start hold timer
-            if holdTimer then holdTimer:Disconnect() end
-            holdTimer = game:GetService("RunService").Stepped:Connect(function()
-                local elapsed = tick() - holdTimerStart
-                if elapsed >= holdDuration and not isDragging then
-                    isHolding = true
-                    Window:ToggleInterface()   -- toggle on hold
-                    holdTimer:Disconnect()
-                    holdTimer = nil
-                end
-            end)
-            holdTimerStart = tick()
         end
     end)
 
     ToggleButton.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if holdTimer then
-                holdTimer:Disconnect()
-                holdTimer = nil
+            -- If we didn't drag, treat as a tap
+            if not isDragging then
+                Window:ToggleInterface()
             end
-            -- If it was a drag, do nothing; if it was a hold, already toggled
             isDragging = false
-            isHolding = false
         end
     end)
 
@@ -6005,22 +5985,16 @@ if NeverLose.IsMobile then
         if not ToggleButton.Parent then return end
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
             if ToggleButton:IsHovering() and (input.UserInputState == Enum.UserInputState.Changed) then
-                local dist = (input.Position - startPos).Magnitude
+                local dist = (input.Position - dragStart).Magnitude
                 if dist > dragThreshold then
                     isDragging = true
-                    -- Cancel hold if dragging
-                    if holdTimer then
-                        holdTimer:Disconnect()
-                        holdTimer = nil
-                    end
-                end
-                if isDragging then
                     updatePosition(input)
                 end
             end
         end
     end)
 end
+
 
 	function Window:ToggleInterface()
 		Window.Signal:SetValue(not Window.Signal:GetValue());
