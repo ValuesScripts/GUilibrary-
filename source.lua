@@ -5909,13 +5909,13 @@ end
     end;
 end)));
 
--- Mobile toggle button (rounded square, draggable, click to toggle, with "R" logo)
+-- Mobile toggle button (draggable, tap to toggle, with "R" logo)
 if NeverLose.IsMobile then
     local ToggleButton = Instance.new("ImageButton")
     ToggleButton.Name = "MobileToggle"
     ToggleButton.Parent = NeverLose.ScreenGui
-    ToggleButton.AnchorPoint = Vector2.new(0.5, 0.5)   -- center of the button
-    ToggleButton.Position = UDim2.new(1, -40, 1, -40)   -- bottom‑right corner
+    ToggleButton.AnchorPoint = Vector2.new(0.5, 0.5)      -- centre of the button
+    ToggleButton.Position = UDim2.new(1, -40, 1, -40)     -- bottom‑right corner
     ToggleButton.Size = UDim2.new(0, 55, 0, 55)
     ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
     ToggleButton.BackgroundTransparency = 0.15
@@ -5945,11 +5945,12 @@ if NeverLose.IsMobile then
     icon.TextSize = 30
     icon.TextTransparency = 0.1
 
-    -- ---------- Drag & Tap logic (reliable) ----------
-    local activeInput = nil
+    -- ---------- Drag & Tap (bulletproof) ----------
+    local activeInput = nil      -- the touch/mouse input that is currently dragging
     local startPos = Vector2.new(0, 0)
     local hasMoved = false
 
+    -- When you press the button
     ToggleButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
             activeInput = input
@@ -5958,7 +5959,8 @@ if NeverLose.IsMobile then
         end
     end)
 
-    ToggleButton.InputEnded:Connect(function(input)
+    -- When you release (anywhere on screen)
+    UserInputService.InputEnded:Connect(function(input)
         if input == activeInput then
             activeInput = nil
             if not hasMoved then
@@ -5967,6 +5969,7 @@ if NeverLose.IsMobile then
         end
     end)
 
+    -- While the finger/mouse moves (global tracking)
     UserInputService.InputChanged:Connect(function(input)
         if not activeInput then return end
         if input ~= activeInput then return end
@@ -5974,10 +5977,11 @@ if NeverLose.IsMobile then
             return
         end
 
+        -- Check if movement is significant
         local dist = (input.Position - startPos).Magnitude
-        if dist > 5 then
+        if dist > 3 then               -- tiny threshold to avoid jitter
             hasMoved = true
-            -- Move the button so its center follows the finger exactly
+            -- Move the button so its centre is exactly at the finger position
             ToggleButton.Position = UDim2.new(0, input.Position.X, 0, input.Position.Y)
         end
     end)
