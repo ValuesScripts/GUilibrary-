@@ -3848,16 +3848,18 @@ function NeverLose:CreateWindow(Config)
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 	});
+	
+	-- Auto-size for mobile
+if NeverLose.IsMobile then
+    Config.Size = NeverLose.Scales.Mobile
+end
+
 
 	local Window = {
 		Logo = Config.Logo,
 		Name = Config.Name,
 		Content = Config.Content,
-		-- Auto-size for mobile
-if NeverLose.IsMobile then
-    Config.Size = NeverLose.Scales.Mobile
-end
-Window.Size = Config.Size,
+		Size = Config.Size,
 		ConfigFolder = Config.ConfigFolder,
 		Signal = NeverLose:CreateSignal(true),
 		Tabs = {},
@@ -5906,7 +5908,14 @@ Window.Size = Config.Size,
 	Window:SetAccount();
 
 	NeverLose:AddSignal(UserInputService.InputBegan:Connect(LPH_NO_VIRTUALIZE(function(value,ISTYPING)
-	-- Mobile toggle button
+    if value.KeyCode == Window.Keybind or value.KeyCode.Name == Window.Keybind then
+        if not ISTYPING then
+            Window:ToggleInterface()
+        end
+    end;
+end)));
+
+-- Mobile toggle button (outside the listener)
 if NeverLose.IsMobile then
     local ToggleButton = Instance.new("ImageButton")
     ToggleButton.Name = "MobileToggle"
@@ -5937,12 +5946,6 @@ if NeverLose.IsMobile then
         Window:ToggleInterface()
     end)
 end
-		if value.KeyCode == Window.Keybind or value.KeyCode.Name == Window.Keybind then
-			if not ISTYPING then
-				Window:ToggleInterface()
-			end
-		end;
-	end)));
 
 	function Window:ToggleInterface()
 		Window.Signal:SetValue(not Window.Signal:GetValue());
