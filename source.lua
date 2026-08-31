@@ -1,5 +1,5 @@
---never lose v0.1
---updt
+--v0.2
+
 do
 	local Constant = 'L'..'P'..'H'..'_NO_VIRTUALIZE';
 	getfenv()[Constant] = getfenv()[Constant] or function(f) return f end;
@@ -3860,10 +3860,6 @@ end
 CloseBtn.MouseEnter:Connect(function() onHover(true) end)
 CloseBtn.MouseLeave:Connect(function() onHover(false) end)
 
--- Click to close
-CloseBtn.MouseButton1Click:Connect(function()
-    Window:ToggleInterface()   -- hides the whole UI
-end)
 	-- Auto-size for mobile
 if NeverLose.IsMobile then
     Config.Size = NeverLose.Scales.Mobile
