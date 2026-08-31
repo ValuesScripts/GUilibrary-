@@ -1,5 +1,5 @@
 --never lose v0.1
-
+--updt
 do
 	local Constant = 'L'..'P'..'H'..'_NO_VIRTUALIZE';
 	getfenv()[Constant] = getfenv()[Constant] or function(f) return f end;
@@ -192,8 +192,8 @@ NeverLose.Scales = {
 NeverLose.IconColor = Color3.fromRGB(255, 255, 255);
 NeverLose.ScreenGui = GlobalWindow;
 NeverLose.Flags = {};
-NeverLose.AccentColor = Color3.fromRGB(78, 127, 252);
-NeverLose.MainColor = Color3.fromRGB(8, 8, 13);
+NeverLose.AccentColor = Color3.fromRGB(0, 180, 255)    -- bright cyan
+NeverLose.MainColor = Color3.fromRGB(12, 12, 18)       -- deeper dark
 NeverLose.RegisiteryColor = {};
 NeverLose.NameRegisitry = {};
 NeverLose.IsMosueOverOtherFrame = false;
@@ -1252,7 +1252,7 @@ function NeverLose:CreateOptionWindow(Frame: Frame , Zindex)
 	OptionHandler.Size = UDim2.new(0, 220, 0, 75)
 	OptionHandler.ZIndex = Zindex + 9
 
-	UICorner.CornerRadius = UDim.new(0, 10)
+	UICorner.CornerRadius = UDim.new(0, 12)   -- was default 0
 	UICorner.Parent = OptionHandler
 
 	UIListLayout.Parent = OptionHandler
@@ -1453,7 +1453,7 @@ function NeverLose:CreateColorPicker(HandleFrame: Frame)
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(0.10, Color3.fromRGB(255, 153, 0)), ColorSequenceKeypoint.new(0.20, Color3.fromRGB(203, 255, 0)), ColorSequenceKeypoint.new(0.30, Color3.fromRGB(50, 255, 0)), ColorSequenceKeypoint.new(0.40, Color3.fromRGB(0, 255, 102)), ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 101, 255)), ColorSequenceKeypoint.new(0.70, Color3.fromRGB(50, 0, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(204, 0, 255)), ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 153)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))}
 	UIGradient.Parent = ColorMap
 
-	UICorner_4.CornerRadius = UDim.new(0, 3)
+	UICorner_4.CornerRadius = UDim.new(0, 12)
 	UICorner_4.Parent = ColorMap
 
 	ColorMapSelection.Name = NeverLose.RandomString();
@@ -1721,124 +1721,116 @@ function NeverLose:RegisiterHandler(Handler: Frame , Signal)
 	local ZINdex = Handler.ZIndex;
 
 	function handle:AddToggle(Config)
-		Config = NeverLose:ProcessParams(Config , {
-			Default = false,
-			Flag = nil,
-			Callback = EmptyFunction,
-		});
+    Config = NeverLose:ProcessParams(Config , {
+        Default = false,
+        Flag = nil,
+        Callback = EmptyFunction,
+    });
 
-		local Toggle = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local Circle = Instance.new("Frame")
-		local UICorner_2 = Instance.new("UICorner")
+    local Toggle = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local CheckIcon = Instance.new("TextLabel")   -- replaces the circle
 
-		Toggle.Name = NeverLose.RandomString();
-		Toggle.Parent = Handler
-		Toggle.BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-		Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Toggle.BorderSizePixel = 0
-		Toggle.ClipsDescendants = true
-		Toggle.Size = UDim2.new(0, 30, 0, 18)
-		Toggle.ZIndex = ZINdex + 13
-		Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
+    Toggle.Name = NeverLose.RandomString();
+    Toggle.Parent = Handler
+    Toggle.BackgroundColor3 = Color3.fromRGB(30, 32, 40)   -- off state
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.BorderSizePixel = 0
+    Toggle.ClipsDescendants = true
+    Toggle.Size = UDim2.new(0, 18, 0, 18)          -- square
+    Toggle.ZIndex = ZINdex + 13
+    Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(1, 0)
-		UICorner.Parent = Toggle
+    UICorner.CornerRadius = UDim.new(0, 4)          -- slight rounding
+    UICorner.Parent = Toggle
 
-		Circle.Name = NeverLose.RandomString();
-		Circle.Parent = Toggle
-		Circle.AnchorPoint = Vector2.new(0.5, 0.5)
-		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Circle.BackgroundTransparency = 0.500
-		Circle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Circle.BorderSizePixel = 0
-		Circle.Position = UDim2.new(0.300000012, 0, 0.5, 0)
-		Circle.Size = UDim2.new(0, 16, 0, 16)
-		Circle.ZIndex = ZINdex + 14
+    CheckIcon.Name = NeverLose.RandomString();
+    CheckIcon.Parent = Toggle
+    CheckIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    CheckIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    CheckIcon.BackgroundTransparency = 1.000
+    CheckIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    CheckIcon.BorderSizePixel = 0
+    CheckIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    CheckIcon.Size = UDim2.new(1, 0, 1, 0)
+    CheckIcon.ZIndex = ZINdex + 14
+    CheckIcon.FontFace = NeverLose.BuiltInBold
+    CheckIcon.Text = "check"                       -- built-in check icon
+    CheckIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CheckIcon.TextSize = 16.000
+    CheckIcon.TextTransparency = 1                -- hidden initially
+    CheckIcon.TextWrapped = true
 
-		UICorner_2.CornerRadius = UDim.new(1, 0)
-		UICorner_2.Parent = Circle
+    local ToggleLib = {
+        Root = Toggle	
+    };
 
-		local ToggleLib = {
-			Root = Toggle	
-		};
+    ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            -- enabled: accent background, check visible
+            NeverLose.PlayAnimate(Toggle, SlowyTween, {
+                BackgroundColor3 = NeverLose.AccentColor,
+                BackgroundTransparency = 0
+            })
+            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
+                TextTransparency = 0
+            })
+        else
+            -- disabled: dark background, check hidden
+            NeverLose.PlayAnimate(Toggle, SlowyTween, {
+                BackgroundColor3 = Color3.fromRGB(30, 32, 40),
+                BackgroundTransparency = 0
+            })
+            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
+                TextTransparency = 1
+            })
+        end;
+    end);
 
-		ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 0,
-					BackgroundColor3 = NeverLose.AccentColor
-				})
+    ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            ToggleLib.SetUI(Config.Default);
+        else
+            -- hide everything
+            NeverLose.PlayAnimate(Toggle, SlowyTween, {
+                BackgroundTransparency = 1,
+                BackgroundColor3 = Color3.fromRGB(30, 32, 40)
+            })
+            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
+                TextTransparency = 1
+            })
+        end;
+    end);
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 0,
-					Position = UDim2.new(0.7, 0, 0.5, 0)
-				})
-			else
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 0,
-					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-				})
+    ToggleLib.SetUI(Config.Default);
+    ToggleLib.SetVisible(Signal:GetValue());
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 0.500,
-					Position = UDim2.new(0.300000012, 0, 0.5, 0)
-				})
-			end;
-		end);
+    NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
+        Config.Default = not Config.Default;
+        ToggleLib.SetUI(Config.Default);
+        Config.Callback(Config.Default)
+    end))
 
-		ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				ToggleLib.SetUI(Config.Default);
-			else
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 1,
-					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-				})
+    ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					Position = UDim2.new(0.300000012, 0, 0.5, 0)
-				})
-			end;
-		end);
+    function ToggleLib:GetValue()
+        return Config.Default;
+    end;
 
-		ToggleLib.SetUI(Config.Default);
-		ToggleLib.SetVisible(Signal:GetValue());
+    function ToggleLib:SetValue(v)
+        Config.Default = v;
+        if Signal:GetValue() then
+            ToggleLib.SetUI(Config.Default);
+        end;
+        Config.Callback(Config.Default)
+    end;
 
-		NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
-			Config.Default = not Config.Default;
+    if Config.Flag then
+        NeverLose.Flags[Config.Flag] = ToggleLib;
+    end;
 
-			ToggleLib.SetUI(Config.Default);
-
-			Config.Callback(Config.Default)
-		end))
-
-		ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
-
-		function ToggleLib:GetValue()
-			return Config.Default;
-		end;
-
-		function ToggleLib:SetValue(v)
-			Config.Default = v;
-
-			if Signal:GetValue() then
-				ToggleLib.SetUI(Config.Default);
-			end;
-
-			Config.Callback(Config.Default)
-		end;
-
-		if Config.Flag then
-			NeverLose.Flags[Config.Flag] = ToggleLib;
-		end;
-
-		return ToggleLib;
-	end;
+    return ToggleLib;
+end;
 
 	function handle:AddSlider(Config)
 		Config = NeverLose:ProcessParams(Config , {
@@ -1984,7 +1976,7 @@ function NeverLose:RegisiterHandler(Handler: Frame , Signal)
 		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Frame.BorderSizePixel = 0
 		Frame.Position = UDim2.new(1, 5, 0.5, 0)
-		Frame.Size = UDim2.new(0, 10, 0, 10)
+		Frame.Size = UDim2.new(0, 12, 0, 12)   -- was 10x10
 		Frame.ZIndex = ZINdex + 15
 
 		UICorner_5.CornerRadius = UDim.new(1, 0)
@@ -3842,7 +3834,36 @@ function NeverLose:CreateWindow(Config)
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 	});
-	
+
+	-- Close Button
+local CloseBtn = Instance.new("TextLabel")
+CloseBtn.Name = NeverLose.RandomString()
+CloseBtn.Parent = RightHeader
+CloseBtn.AnchorPoint = Vector2.new(1, 0.5)
+CloseBtn.Position = UDim2.new(1, -45, 0.5, 0)
+CloseBtn.Size = UDim2.new(0, 25, 0, 25)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.FontFace = NeverLose.BuiltInBold
+CloseBtn.Text = "x"
+CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
+CloseBtn.TextSize = 20
+CloseBtn.TextTransparency = 0.4
+CloseBtn.ZIndex = 20
+
+-- Mouse hover effect
+local function onHover(enter)
+    TweenService:Create(CloseBtn, TweenInfo.new(0.2), {
+        TextTransparency = enter and 0 or 0.4,
+        TextColor3 = enter and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(200,200,200)
+    }):Play()
+end
+CloseBtn.MouseEnter:Connect(function() onHover(true) end)
+CloseBtn.MouseLeave:Connect(function() onHover(false) end)
+
+-- Click to close
+CloseBtn.MouseButton1Click:Connect(function()
+    Window:ToggleInterface()   -- hides the whole UI
+end)
 	-- Auto-size for mobile
 if NeverLose.IsMobile then
     Config.Size = NeverLose.Scales.Mobile
@@ -4356,7 +4377,7 @@ end
 	RightMenuFrame.Name = NeverLose.RandomString();
 	RightMenuFrame.Parent = WindowFrame
 	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-	RightMenuFrame.BackgroundTransparency = 0.600
+	RightMenuFrame.BackgroundTransparency = 0.85
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
 	RightMenuFrame.ClipsDescendants = true
