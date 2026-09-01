@@ -3831,6 +3831,13 @@ function NeverLose:CreateWindow(Config)
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 	});
+-- Inside CreateWindow, after WindowFrame is created:
+if not Config.DisableShadow then
+    Window.Shadow = NeverLose:CreateShadow(WindowFrame)
+    Window.Shadow:Render(false)
+else
+    Window.Shadow = { Render = function() end }  -- dummy
+end
 	
 	-- Auto-size for mobile
 if NeverLose.IsMobile then
@@ -3896,7 +3903,7 @@ end
 	WindowFrame.Name = NeverLose.RandomString();
 	WindowFrame.Parent = NeverLose.ScreenGui;
 	WindowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	WindowFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
+	WindowFrame.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
 	WindowFrame.BackgroundTransparency = 0
 	WindowFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowFrame.BorderSizePixel = 0
@@ -5958,8 +5965,8 @@ end)));
 		Watermark.Name = NeverLose.RandomString();
 		Watermark.Parent = NeverLose.ScreenGui
 		Watermark.AnchorPoint = Vector2.new(1, 0)
-		Watermark.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-		Watermark.BackgroundTransparency = 0.200
+		Watermark.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
+		Watermark.BackgroundTransparency = 0
 		Watermark.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Watermark.BorderSizePixel = 0
 		Watermark.ClipsDescendants = true
