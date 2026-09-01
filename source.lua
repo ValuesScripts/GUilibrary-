@@ -4373,7 +4373,7 @@ end
 	RightMenuFrame.Name = NeverLose.RandomString();
 	RightMenuFrame.Parent = WindowFrame
 	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-	RightMenuFrame.BackgroundTransparency = 0.85
+	RightMenuFrame.BackgroundTransparency = 1
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
 	RightMenuFrame.ClipsDescendants = true
@@ -4749,6 +4749,22 @@ end
 		local Tab = {
 			Signal = NeverLose:CreateSignal(false);
 		};
+-- Full‑width container (spans both columns)
+local FullContainer = Instance.new("Frame")
+FullContainer.Name = NeverLose.RandomString()
+FullContainer.Parent = TabFrame
+FullContainer.AnchorPoint = Vector2.new(0.5, 0)
+FullContainer.Position = UDim2.new(0.5, 0, 0, 0)
+FullContainer.BackgroundTransparency = 1
+FullContainer.Size = UDim2.new(1, 0, 0, 0)
+FullContainer.ZIndex = 10
+FullContainer.ClipsDescendants = true
+
+local FullListLayout = Instance.new("UIListLayout")
+FullListLayout.Parent = FullContainer
+FullListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+FullListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+FullListLayout.Padding = UDim.new(0, 5)
 
 		local TabButton = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
@@ -4983,6 +4999,28 @@ end
 				})
 			end;
 		end));
+local function updateFullHeight()
+    local fullHeight = FullListLayout.AbsoluteContentSize.Y
+    if fullHeight > 0 then
+        FullContainer.Size = UDim2.new(1, 0, 0, fullHeight + 5)  -- +5 for padding
+        LeftScroll.Position = UDim2.new(0.25, 0, 0, fullHeight + 10)
+        RightScroll.Position = UDim2.new(0.75, 0, 0, fullHeight + 10)
+        LeftScroll.Size = UDim2.new(0.5, 0, 1, -(fullHeight + 15))
+        RightScroll.Size = UDim2.new(0.5, 0, 1, -(fullHeight + 15))
+    else
+        FullContainer.Size = UDim2.new(1, 0, 0, 0)
+        LeftScroll.Position = UDim2.new(0.25, 0, 0, 0)
+        RightScroll.Position = UDim2.new(0.75, 0, 0, 0)
+        LeftScroll.Size = UDim2.new(0.5, 0, 1, -5)
+        RightScroll.Size = UDim2.new(0.5, 0, 1, -5)
+    end
+end
+
+-- Listen to changes in the full container's content
+FullListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateFullHeight)
+
+-- Also call once after everything is set up
+task.delay(0.1, updateFullHeight)   -- delay to let layout settle
 
 		function Tab:AddSection(Config)
 			Config = NeverLose:ProcessParams(Config , {
@@ -5099,6 +5137,94 @@ end
 
 		return Tab;
 	end;
+function Tab:AddFullSection(Config)
+    Config = NeverLose:ProcessParams(Config, {
+        Name = "FULL SECTION",
+    })
+
+    local SectionFrame = Instance.new("Frame")
+    local SectionLabel = Instance.new("TextLabel")
+    local SectionHandler = Instance.new("Frame")
+    local UIStroke = Instance.new("UIStroke")
+    local UICorner = Instance.new("UICorner")
+    local UIListLayout = Instance.new("UIListLayout")
+
+    SectionFrame.Name = NeverLose.RandomString()
+    SectionFrame.Parent = FullContainer   -- NOT left/right
+    SectionFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+    SectionFrame.BackgroundTransparency = 1
+    SectionFrame.BorderColor3 = Color3.fromRGB(0,0,0)
+    SectionFrame.BorderSizePixel = 0
+    SectionFrame.ClipsDescendants = true
+    SectionFrame.Size = UDim2.new(1, -5, 0, 0)
+    SectionFrame.ZIndex = 9
+
+    SectionLabel.Name = NeverLose.RandomString()
+    SectionLabel.Parent = SectionFrame
+    SectionLabel.AnchorPoint = Vector2.new(0.5, 0)
+    SectionLabel.BackgroundTransparency = 1
+    SectionLabel.Position = UDim2.new(0.5, 0, 0, 0)
+    SectionLabel.Size = UDim2.new(1, -35, 0, 15)
+    SectionLabel.ZIndex = 9
+    SectionLabel.Font = Enum.Font.GothamMedium
+    SectionLabel.Text = Config.Name
+    SectionLabel.TextColor3 = Color3.fromRGB(255,255,255)
+    SectionLabel.TextSize = 11
+    SectionLabel.TextTransparency = 0.5
+    SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+    SectionHandler.Name = NeverLose.RandomString()
+    SectionHandler.Parent = SectionFrame
+    SectionHandler.AnchorPoint = Vector2.new(0.5, 0)
+    SectionHandler.BackgroundColor3 = Color3.fromRGB(20,22,27)
+    SectionHandler.BackgroundTransparency = 0.5
+    SectionHandler.BorderColor3 = Color3.fromRGB(0,0,0)
+    SectionHandler.BorderSizePixel = 0
+    SectionHandler.ClipsDescendants = true
+    SectionHandler.Position = UDim2.new(0.5, 0, 0, 20)
+    SectionHandler.Size = UDim2.new(1, -10, 1, -21)
+    SectionHandler.ZIndex = 9
+
+    UIStroke.Transparency = 0.65
+    UIStroke.Color = Color3.fromRGB(45,48,58)
+    UIStroke.Parent = SectionHandler
+
+    UICorner.CornerRadius = UDim.new(0, 10)
+    UICorner.Parent = SectionHandler
+
+    UIListLayout.Parent = SectionHandler
+    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        local contentHeight = UIListLayout.AbsoluteContentSize.Y
+        if contentHeight <= 1 then
+            SectionFrame.Size = UDim2.new(1, -5, 0, 0)
+        else
+            SectionFrame.Size = UDim2.new(1, -5, 0, contentHeight + 19.5)
+        end
+        updateFullHeight()   -- refresh column positions
+    end)
+
+    local Section = NeverLose:RegisiterItem(SectionHandler, Tab.Signal)
+
+    Section.SetRender = function(value)
+        if value then
+            NeverLose.PlayAnimate(SectionLabel, SlowyTween, { TextTransparency = 0.5 })
+            NeverLose.PlayAnimate(SectionHandler, SlowyTween, { BackgroundTransparency = 0.5 })
+            NeverLose.PlayAnimate(UIStroke, SlowyTween, { Transparency = 0.65 })
+        else
+            NeverLose.PlayAnimate(SectionLabel, SlowyTween, { TextTransparency = 1 })
+            NeverLose.PlayAnimate(SectionHandler, SlowyTween, { BackgroundTransparency = 1 })
+            NeverLose.PlayAnimate(UIStroke, SlowyTween, { Transparency = 1 })
+        end
+    end
+
+    Section.SetRender(Tab.Signal:GetValue())
+    Tab.Signal:Connect(Section.SetRender)
+
+    return Section
+end
 
 	function Window:_InitConfig()
 		local ConfigSignal = NeverLose:CreateSignal(false);
