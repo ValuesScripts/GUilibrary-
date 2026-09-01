@@ -3897,7 +3897,7 @@ end
 	WindowFrame.Parent = NeverLose.ScreenGui;
 	WindowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	WindowFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-	WindowFrame.BackgroundTransparency = 0.055
+	WindowFrame.BackgroundTransparency = 0
 	WindowFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowFrame.BorderSizePixel = 0
 	WindowFrame.ClipsDescendants = true
@@ -3906,7 +3906,7 @@ end
 	WindowFrame.Active = true;
 
 	if not NeverLose.EnabledBlur then
-		WindowFrame.BackgroundTransparency = 0.0255
+		WindowFrame.BackgroundTransparency = 0
 	end;
 
 	local renderParentWindow = LPH_NO_VIRTUALIZE(function()
