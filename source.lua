@@ -3941,7 +3941,7 @@ end
 	Window.SetRender = LPH_NO_VIRTUALIZE(function(self , value)
 		if value then
 			NeverLose.PlayAnimate(WindowFrame , SlowyTween , {
-				BackgroundTransparency = (NeverLose.EnabledBlur and 0.055) or 0.0255,
+				BackgroundTransparency = 0,
 				Size = Window.Size
 			})
 
