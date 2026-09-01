@@ -3831,13 +3831,7 @@ function NeverLose:CreateWindow(Config)
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 	});
--- Inside CreateWindow, after WindowFrame is created:
-if not Config.DisableShadow then
-    Window.Shadow = NeverLose:CreateShadow(WindowFrame)
-    Window.Shadow:Render(false)
-else
-    Window.Shadow = { Render = function() end }  -- dummy
-end
+
 	
 	-- Auto-size for mobile
 if NeverLose.IsMobile then
