@@ -5117,11 +5117,6 @@ end
     return Tab;
 end
 
-FullListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
-    local contentHeight = FullListLayout.AbsoluteContentSize.Y + 5
-    FullContainer.Size = UDim2.new(1, 0, 0, contentHeight)
-    FullScroll.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
-end)
 
 	function Window:_InitConfig()
 		local ConfigSignal = NeverLose:CreateSignal(false);
