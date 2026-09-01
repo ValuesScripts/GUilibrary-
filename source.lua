@@ -1,4 +1,4 @@
---v0.2
+--never lose v0.1
 
 do
 	local Constant = 'L'..'P'..'H'..'_NO_VIRTUALIZE';
@@ -192,8 +192,8 @@ NeverLose.Scales = {
 NeverLose.IconColor = Color3.fromRGB(255, 255, 255);
 NeverLose.ScreenGui = GlobalWindow;
 NeverLose.Flags = {};
-NeverLose.AccentColor = Color3.fromRGB(0, 180, 255)    -- bright cyan
-NeverLose.MainColor = Color3.fromRGB(12, 12, 18)       -- deeper dark
+NeverLose.AccentColor = Color3.fromRGB(78, 127, 252);
+NeverLose.MainColor = Color3.fromRGB(8, 8, 13);
 NeverLose.RegisiteryColor = {};
 NeverLose.NameRegisitry = {};
 NeverLose.IsMosueOverOtherFrame = false;
@@ -1252,7 +1252,7 @@ function NeverLose:CreateOptionWindow(Frame: Frame , Zindex)
 	OptionHandler.Size = UDim2.new(0, 220, 0, 75)
 	OptionHandler.ZIndex = Zindex + 9
 
-	UICorner.CornerRadius = UDim.new(0, 12)   -- was default 0
+	UICorner.CornerRadius = UDim.new(0, 10)
 	UICorner.Parent = OptionHandler
 
 	UIListLayout.Parent = OptionHandler
@@ -1453,7 +1453,7 @@ function NeverLose:CreateColorPicker(HandleFrame: Frame)
 	UIGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 0, 0)), ColorSequenceKeypoint.new(0.10, Color3.fromRGB(255, 153, 0)), ColorSequenceKeypoint.new(0.20, Color3.fromRGB(203, 255, 0)), ColorSequenceKeypoint.new(0.30, Color3.fromRGB(50, 255, 0)), ColorSequenceKeypoint.new(0.40, Color3.fromRGB(0, 255, 102)), ColorSequenceKeypoint.new(0.50, Color3.fromRGB(0, 255, 255)), ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 101, 255)), ColorSequenceKeypoint.new(0.70, Color3.fromRGB(50, 0, 255)), ColorSequenceKeypoint.new(0.80, Color3.fromRGB(204, 0, 255)), ColorSequenceKeypoint.new(0.90, Color3.fromRGB(255, 0, 153)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 0, 0))}
 	UIGradient.Parent = ColorMap
 
-	UICorner_4.CornerRadius = UDim.new(0, 12)
+	UICorner_4.CornerRadius = UDim.new(0, 3)
 	UICorner_4.Parent = ColorMap
 
 	ColorMapSelection.Name = NeverLose.RandomString();
@@ -1721,116 +1721,124 @@ function NeverLose:RegisiterHandler(Handler: Frame , Signal)
 	local ZINdex = Handler.ZIndex;
 
 	function handle:AddToggle(Config)
-    Config = NeverLose:ProcessParams(Config , {
-        Default = false,
-        Flag = nil,
-        Callback = EmptyFunction,
-    });
+		Config = NeverLose:ProcessParams(Config , {
+			Default = false,
+			Flag = nil,
+			Callback = EmptyFunction,
+		});
 
-    local Toggle = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local CheckIcon = Instance.new("TextLabel")   -- replaces the circle
+		local Toggle = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local Circle = Instance.new("Frame")
+		local UICorner_2 = Instance.new("UICorner")
 
-    Toggle.Name = NeverLose.RandomString();
-    Toggle.Parent = Handler
-    Toggle.BackgroundColor3 = Color3.fromRGB(30, 32, 40)   -- off state
-    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Toggle.BorderSizePixel = 0
-    Toggle.ClipsDescendants = true
-    Toggle.Size = UDim2.new(0, 18, 0, 18)          -- square
-    Toggle.ZIndex = ZINdex + 13
-    Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
+		Toggle.Name = NeverLose.RandomString();
+		Toggle.Parent = Handler
+		Toggle.BackgroundColor3 = Color3.fromRGB(10, 13, 21)
+		Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Toggle.BorderSizePixel = 0
+		Toggle.ClipsDescendants = true
+		Toggle.Size = UDim2.new(0, 30, 0, 18)
+		Toggle.ZIndex = ZINdex + 13
+		Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-    UICorner.CornerRadius = UDim.new(0, 4)          -- slight rounding
-    UICorner.Parent = Toggle
+		UICorner.CornerRadius = UDim.new(1, 0)
+		UICorner.Parent = Toggle
 
-    CheckIcon.Name = NeverLose.RandomString();
-    CheckIcon.Parent = Toggle
-    CheckIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-    CheckIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    CheckIcon.BackgroundTransparency = 1.000
-    CheckIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    CheckIcon.BorderSizePixel = 0
-    CheckIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
-    CheckIcon.Size = UDim2.new(1, 0, 1, 0)
-    CheckIcon.ZIndex = ZINdex + 14
-    CheckIcon.FontFace = NeverLose.BuiltInBold
-    CheckIcon.Text = "check"                       -- built-in check icon
-    CheckIcon.TextColor3 = Color3.fromRGB(255, 255, 255)
-    CheckIcon.TextSize = 16.000
-    CheckIcon.TextTransparency = 1                -- hidden initially
-    CheckIcon.TextWrapped = true
+		Circle.Name = NeverLose.RandomString();
+		Circle.Parent = Toggle
+		Circle.AnchorPoint = Vector2.new(0.5, 0.5)
+		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Circle.BackgroundTransparency = 0.500
+		Circle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Circle.BorderSizePixel = 0
+		Circle.Position = UDim2.new(0.300000012, 0, 0.5, 0)
+		Circle.Size = UDim2.new(0, 16, 0, 16)
+		Circle.ZIndex = ZINdex + 14
 
-    local ToggleLib = {
-        Root = Toggle	
-    };
+		UICorner_2.CornerRadius = UDim.new(1, 0)
+		UICorner_2.Parent = Circle
 
-    ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
-        if value then
-            -- enabled: accent background, check visible
-            NeverLose.PlayAnimate(Toggle, SlowyTween, {
-                BackgroundColor3 = NeverLose.AccentColor,
-                BackgroundTransparency = 0
-            })
-            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
-                TextTransparency = 0
-            })
-        else
-            -- disabled: dark background, check hidden
-            NeverLose.PlayAnimate(Toggle, SlowyTween, {
-                BackgroundColor3 = Color3.fromRGB(30, 32, 40),
-                BackgroundTransparency = 0
-            })
-            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
-                TextTransparency = 1
-            })
-        end;
-    end);
+		local ToggleLib = {
+			Root = Toggle	
+		};
 
-    ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
-        if value then
-            ToggleLib.SetUI(Config.Default);
-        else
-            -- hide everything
-            NeverLose.PlayAnimate(Toggle, SlowyTween, {
-                BackgroundTransparency = 1,
-                BackgroundColor3 = Color3.fromRGB(30, 32, 40)
-            })
-            NeverLose.PlayAnimate(CheckIcon, SlowyTween, {
-                TextTransparency = 1
-            })
-        end;
-    end);
+		ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
+			if value then
+				NeverLose.PlayAnimate(Toggle,SlowyTween,{
+					BackgroundTransparency = 0,
+					BackgroundColor3 = NeverLose.AccentColor
+				})
 
-    ToggleLib.SetUI(Config.Default);
-    ToggleLib.SetVisible(Signal:GetValue());
+				NeverLose.PlayAnimate(Circle,SlowyTween,{
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 0,
+					Position = UDim2.new(0.7, 0, 0.5, 0)
+				})
+			else
+				NeverLose.PlayAnimate(Toggle,SlowyTween,{
+					BackgroundTransparency = 0,
+					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
+				})
 
-    NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
-        Config.Default = not Config.Default;
-        ToggleLib.SetUI(Config.Default);
-        Config.Callback(Config.Default)
-    end))
+				NeverLose.PlayAnimate(Circle,SlowyTween,{
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 0.500,
+					Position = UDim2.new(0.300000012, 0, 0.5, 0)
+				})
+			end;
+		end);
 
-    ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
+		ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
+			if value then
+				ToggleLib.SetUI(Config.Default);
+			else
+				NeverLose.PlayAnimate(Toggle,SlowyTween,{
+					BackgroundTransparency = 1,
+					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
+				})
 
-    function ToggleLib:GetValue()
-        return Config.Default;
-    end;
+				NeverLose.PlayAnimate(Circle,SlowyTween,{
+					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+					BackgroundTransparency = 1,
+					Position = UDim2.new(0.300000012, 0, 0.5, 0)
+				})
+			end;
+		end);
 
-    function ToggleLib:SetValue(v)
-        Config.Default = v;
-        if Signal:GetValue() then
-            ToggleLib.SetUI(Config.Default);
-        end;
-        Config.Callback(Config.Default)
-    end;
+		ToggleLib.SetUI(Config.Default);
+		ToggleLib.SetVisible(Signal:GetValue());
 
-    if Config.Flag then
-        NeverLose.Flags[Config.Flag] = ToggleLib;
-    end;
+		NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
+			Config.Default = not Config.Default;
 
-    return ToggleLib;
-end;
+			ToggleLib.SetUI(Config.Default);
+
+			Config.Callback(Config.Default)
+		end))
+
+		ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
+
+		function ToggleLib:GetValue()
+			return Config.Default;
+		end;
+
+		function ToggleLib:SetValue(v)
+			Config.Default = v;
+
+			if Signal:GetValue() then
+				ToggleLib.SetUI(Config.Default);
+			end;
+
+			Config.Callback(Config.Default)
+		end;
+
+		if Config.Flag then
+			NeverLose.Flags[Config.Flag] = ToggleLib;
+		end;
+
+		return ToggleLib;
+	end;
 
 	function handle:AddSlider(Config)
 		Config = NeverLose:ProcessParams(Config , {
@@ -1976,7 +1984,7 @@ end;
 		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Frame.BorderSizePixel = 0
 		Frame.Position = UDim2.new(1, 5, 0.5, 0)
-		Frame.Size = UDim2.new(0, 12, 0, 12)   -- was 10x10
+		Frame.Size = UDim2.new(0, 10, 0, 10)
 		Frame.ZIndex = ZINdex + 15
 
 		UICorner_5.CornerRadius = UDim.new(1, 0)
@@ -3834,32 +3842,7 @@ function NeverLose:CreateWindow(Config)
 		Enable3DRenderer = false,
 		Keybind = "Insert"
 	});
-
-	-- Close Button
-local CloseBtn = Instance.new("TextLabel")
-CloseBtn.Name = NeverLose.RandomString()
-CloseBtn.Parent = RightHeader
-CloseBtn.AnchorPoint = Vector2.new(1, 0.5)
-CloseBtn.Position = UDim2.new(1, -45, 0.5, 0)
-CloseBtn.Size = UDim2.new(0, 25, 0, 25)
-CloseBtn.BackgroundTransparency = 1
-CloseBtn.FontFace = NeverLose.BuiltInBold
-CloseBtn.Text = "x"
-CloseBtn.TextColor3 = Color3.fromRGB(200, 200, 200)
-CloseBtn.TextSize = 20
-CloseBtn.TextTransparency = 0.4
-CloseBtn.ZIndex = 20
-
--- Mouse hover effect
-local function onHover(enter)
-    TweenService:Create(CloseBtn, TweenInfo.new(0.2), {
-        TextTransparency = enter and 0 or 0.4,
-        TextColor3 = enter and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(200,200,200)
-    }):Play()
-end
-CloseBtn.MouseEnter:Connect(function() onHover(true) end)
-CloseBtn.MouseLeave:Connect(function() onHover(false) end)
-
+	
 	-- Auto-size for mobile
 if NeverLose.IsMobile then
     Config.Size = NeverLose.Scales.Mobile
@@ -4373,7 +4356,7 @@ end
 	RightMenuFrame.Name = NeverLose.RandomString();
 	RightMenuFrame.Parent = WindowFrame
 	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-	RightMenuFrame.BackgroundTransparency = 1
+	RightMenuFrame.BackgroundTransparency = 0.600
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
 	RightMenuFrame.ClipsDescendants = true
@@ -4740,492 +4723,405 @@ end
 	end;
 
 	function Window:AddTab(Config)
-		Config = NeverLose:ProcessParams(Config , {
-			Icon = "crosshairs",
-			Name = "Tab",
-			Type = "Double"
-		});
+    Config = NeverLose:ProcessParams(Config , {
+        Icon = "crosshairs",
+        Name = "Tab",
+        Type = "Double"
+    });
 
-		local Tab = {
-			Signal = NeverLose:CreateSignal(false);
-		};
--- Full‑width container (spans both columns)
-local FullContainer = Instance.new("Frame")
-FullContainer.Name = NeverLose.RandomString()
-FullContainer.Parent = TabFrame
-FullContainer.AnchorPoint = Vector2.new(0.5, 0)
-FullContainer.Position = UDim2.new(0.5, 0, 0, 0)
-FullContainer.BackgroundTransparency = 1
-FullContainer.Size = UDim2.new(1, 0, 0, 0)
-FullContainer.ZIndex = 10
-FullContainer.ClipsDescendants = true
+    local Tab = {
+        Signal = NeverLose:CreateSignal(false);
+    };
 
-local FullListLayout = Instance.new("UIListLayout")
-FullListLayout.Parent = FullContainer
-FullListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-FullListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-FullListLayout.Padding = UDim.new(0, 5)
-
-		local TabButton = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local TabIcon = Instance.new("TextLabel")
-		local TabContentLabel = Instance.new("TextLabel")
-
-		Tab.Idx = TabButton;
-
-		TabButton.Name = NeverLose.RandomString();
-		TabButton.Parent = LeftScrollingFrame
-		TabButton.BackgroundColor3 = Color3.fromRGB(41, 45, 49)
-		TabButton.BackgroundTransparency = 0.500
-		TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabButton.BorderSizePixel = 0
-		TabButton.Size = UDim2.new(1, -1, 0, 30)
-		TabButton.ZIndex = 8
-
-		UICorner.CornerRadius = UDim.new(0, 6)
-		UICorner.Parent = TabButton
-
-		TabIcon.Name = NeverLose.RandomString();
-		TabIcon.Parent = TabButton
-		TabIcon.AnchorPoint = Vector2.new(0, 0.5)
-		TabIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TabIcon.BackgroundTransparency = 1.000
-		TabIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabIcon.BorderSizePixel = 0
-		TabIcon.Position = UDim2.new(0, 2, 0.5, 0)
-		TabIcon.Size = UDim2.new(0, 25, 0, 25)
-		TabIcon.ZIndex = 9
-		TabIcon.FontFace = NeverLose.BuiltInBold
-		TabIcon.Text = Config.Icon;
-		TabIcon.TextColor3 = NeverLose.AccentColor
-		TabIcon.TextSize = 16.000
-		TabIcon.TextWrapped = true
-
-		TabContentLabel.Name = NeverLose.RandomString();
-		TabContentLabel.Parent = TabButton
-		TabContentLabel.AnchorPoint = Vector2.new(0, 0.5)
-		TabContentLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TabContentLabel.BackgroundTransparency = 1.000
-		TabContentLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabContentLabel.BorderSizePixel = 0
-		TabContentLabel.Position = UDim2.new(0, 30, 0.5, 0)
-		TabContentLabel.Size = UDim2.new(1, -7, 0, 15)
-		TabContentLabel.ZIndex = 9
-		TabContentLabel.Font = Enum.Font.GothamMedium
-		TabContentLabel.Text = Config.Name
-		TabContentLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		TabContentLabel.TextSize = 12.000
-		TabContentLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-		local TabFrame = Instance.new("Frame")
-		local LeftScroll = Instance.new("ScrollingFrame")
-		local UIListLayout = Instance.new("UIListLayout")
-		local RightScroll = Instance.new("ScrollingFrame")
-		local UIListLayout_2 = Instance.new("UIListLayout")
-
-		TabFrame.Name = NeverLose.RandomString();
-		TabFrame.Parent = TabContainer
-		TabFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-		TabFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		TabFrame.BackgroundTransparency = 1.000
-		TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabFrame.BorderSizePixel = 0
-		TabFrame.ClipsDescendants = true
-		TabFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-		TabFrame.Size = UDim2.new(1, 0, 1, 0)
-		TabFrame.Visible = true;
-
-		LeftScroll.Name = NeverLose.RandomString();
-		LeftScroll.Parent = TabFrame
-		LeftScroll.Active = true
-		LeftScroll.AnchorPoint = Vector2.new(0.5, 0.5)
-		LeftScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		LeftScroll.BackgroundTransparency = 1.000
-		LeftScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		LeftScroll.BorderSizePixel = 0
-		LeftScroll.ClipsDescendants = false
-		LeftScroll.Position = UDim2.new(0.25, 0, 0.5, 0)
-		LeftScroll.Size = UDim2.new(0.5, 0, 1, -5)
-		LeftScroll.ScrollBarThickness = 0
-
-		UIListLayout.Parent = LeftScroll
-		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
-		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout.Padding = UDim.new(0, 5)
-
-		NeverLose:AddSignal(UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
-			LeftScroll.CanvasSize = UDim2.fromOffset(0,UIListLayout.AbsoluteContentSize.Y + 1)
-		end)))
-
-		RightScroll.Name = NeverLose.RandomString();
-		RightScroll.Parent = TabFrame
-		RightScroll.Active = true
-		RightScroll.AnchorPoint = Vector2.new(0.5, 0.5)
-		RightScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		RightScroll.BackgroundTransparency = 1.000
-		RightScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		RightScroll.BorderSizePixel = 0
-		RightScroll.ClipsDescendants = false
-		RightScroll.Position = UDim2.new(0.75, 0, 0.5, 0)
-		RightScroll.Size = UDim2.new(0.5, 0, 1, -5)
-		RightScroll.ScrollBarThickness = 0
-
-		UIListLayout_2.Parent = RightScroll
-		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout_2.Padding = UDim.new(0, 5)
-
-		if Config.Type == "Single" then
-			UIListLayout_2:Destroy();
-			RightScroll:Destroy();
-			RightScroll = LeftScroll;
-			UIListLayout_2 = UIListLayout;
-			LeftScroll.Size = UDim2.new(1, 0, 1, -5);
-			LeftScroll.Position = UDim2.new(0.5, 0, 0.5, 0)
-		else
-			NeverLose:AddSignal(UIListLayout_2:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
-				RightScroll.CanvasSize = UDim2.fromOffset(0,UIListLayout_2.AbsoluteContentSize.Y + 1)
-			end)))
-		end;
-
-		NeverLose:AddSignal(TabIcon:GetPropertyChangedSignal('TextTransparency'):Connect(LPH_NO_VIRTUALIZE(function()
-			if TabIcon.TextTransparency > 0.4 then
-				UIListLayout.Parent = nil;
-				UIListLayout_2.Parent = nil;
-				TabFrame.Visible = false;
-				TabFrame.Parent = nil
-			else
-				UIListLayout.Parent = LeftScroll;
-				UIListLayout_2.Parent = RightScroll;
-				TabFrame.Visible = true;
-				TabFrame.Parent = TabContainer;
-			end;
-		end)));
-
-		Tab.SetValue = LPH_NO_VIRTUALIZE(function(value)
-			Tab.Signal:SetValue(value);
-
-			if value then
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.500
-				})
-
-				NeverLose.PlayAnimate(TabIcon , SlowyTween , {
-					TextTransparency = 0,
-					TextColor3 = NeverLose.AccentColor
-				})
-
-				NeverLose.PlayAnimate(TabContentLabel , SlowyTween , {
-					TextTransparency = 0
-				})
-			else
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 1
-				})
-
-				NeverLose.PlayAnimate(TabIcon , SlowyTween , {
-					TextTransparency = 0.5,
-					TextColor3 = Color3.fromRGB(252, 252, 252)
-				})
-
-				NeverLose.PlayAnimate(TabContentLabel , SlowyTween , {
-					TextTransparency = 0.5
-				})
-			end;
-		end);
-
-		table.insert(Window.Tabs,Tab);
-
-		if Window.Tabs[Window.CurrentTab] == Tab then
-			Tab.SetValue(true)
-		else
-			Tab.SetValue(false);
-		end;
-
-		local over = NeverLose:CreateInput(TabButton,LPH_NO_VIRTUALIZE(function()
-			for i,v in next , Window.Tabs do
-				if v.Idx == TabButton then
-					v.SetValue(true);
-					Window.CurrentTab = i;
-				else
-					v.SetValue(false);
-				end;
-			end;
-		end));
-
-		NeverLose:AddSignal(over.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
-			if Window.Tabs[Window.CurrentTab] == Tab then
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.500
-				})
-			else
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.8
-				})
-			end;
-		end)))
-
-		NeverLose:AddSignal(over.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
-			if Window.Tabs[Window.CurrentTab] == Tab then
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.500
-				})
-			else
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 1
-				})
-			end;
-		end)))
-
-		Window.Signal:Connect(LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				if Window.Tabs[Window.CurrentTab] == Tab then
-					Tab.SetValue(true)
-				else
-					Tab.SetValue(false);
-				end;
-			else
-				Tab.SetValue(false);
-
-				NeverLose.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 1
-				})
-
-				NeverLose.PlayAnimate(TabIcon , SlowyTween , {
-					TextTransparency = 1,
-				})
-
-				NeverLose.PlayAnimate(TabContentLabel , SlowyTween , {
-					TextTransparency = 1
-				})
-			end;
-		end));
-local function updateFullHeight()
-    local fullHeight = FullListLayout.AbsoluteContentSize.Y
-    if fullHeight > 0 then
-        FullContainer.Size = UDim2.new(1, 0, 0, fullHeight + 5)  -- +5 for padding
-        LeftScroll.Position = UDim2.new(0.25, 0, 0, fullHeight + 10)
-        RightScroll.Position = UDim2.new(0.75, 0, 0, fullHeight + 10)
-        LeftScroll.Size = UDim2.new(0.5, 0, 1, -(fullHeight + 15))
-        RightScroll.Size = UDim2.new(0.5, 0, 1, -(fullHeight + 15))
-    else
-        FullContainer.Size = UDim2.new(1, 0, 0, 0)
-        LeftScroll.Position = UDim2.new(0.25, 0, 0, 0)
-        RightScroll.Position = UDim2.new(0.75, 0, 0, 0)
-        LeftScroll.Size = UDim2.new(0.5, 0, 1, -5)
-        RightScroll.Size = UDim2.new(0.5, 0, 1, -5)
-    end
-end
-
--- Listen to changes in the full container's content
-FullListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateFullHeight)
-
--- Also call once after everything is set up
-task.delay(0.1, updateFullHeight)   -- delay to let layout settle
-
-		function Tab:AddSection(Config)
-			Config = NeverLose:ProcessParams(Config , {
-				Name = "SECTION",
-				Position = 'left'
-			});
-
-			local SectionFrame = Instance.new("Frame")
-			local SectionLabel = Instance.new("TextLabel")
-			local SectionHandler = Instance.new("Frame")
-			local UIStroke = Instance.new("UIStroke")
-			local UICorner = Instance.new("UICorner")
-			local UIListLayout = Instance.new("UIListLayout")
-
-			SectionFrame.Name = NeverLose.RandomString();
-			SectionFrame.Parent = (string.lower(Config.Position) == 'left' and LeftScroll) or RightScroll
-			SectionFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SectionFrame.BackgroundTransparency = 1.000
-			SectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SectionFrame.BorderSizePixel = 0
-			SectionFrame.ClipsDescendants = true
-			SectionFrame.Size = UDim2.new(1, -5, 0, 0)
-			SectionFrame.ZIndex = 9
-
-			SectionLabel.Name = NeverLose.RandomString();
-			SectionLabel.Parent = SectionFrame
-			SectionLabel.AnchorPoint = Vector2.new(0.5, 0)
-			SectionLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			SectionLabel.BackgroundTransparency = 1.000
-			SectionLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SectionLabel.BorderSizePixel = 0
-			SectionLabel.Position = UDim2.new(0.5, 0, 0, 0)
-			SectionLabel.Size = UDim2.new(1, -35, 0, 15)
-			SectionLabel.ZIndex = 9
-			SectionLabel.Font = Enum.Font.GothamMedium
-			SectionLabel.Text = Config.Name
-			SectionLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-			SectionLabel.TextSize = 11.000
-			SectionLabel.TextTransparency = 0.500
-			SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-			SectionHandler.Name = NeverLose.RandomString();
-			SectionHandler.Parent = SectionFrame
-			SectionHandler.AnchorPoint = Vector2.new(0.5, 0)
-			SectionHandler.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
-			SectionHandler.BackgroundTransparency = 0.500
-			SectionHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			SectionHandler.BorderSizePixel = 0
-			SectionHandler.ClipsDescendants = true
-			SectionHandler.Position = UDim2.new(0.5, 0, 0, 20)
-			SectionHandler.Size = UDim2.new(1, -10, 1, -21)
-			SectionHandler.ZIndex = 9
-
-			UIStroke.Transparency = 0.650
-			UIStroke.Color = Color3.fromRGB(45, 48, 58)
-			UIStroke.Parent = SectionHandler
-
-			UICorner.CornerRadius = UDim.new(0, 10)
-			UICorner.Parent = SectionHandler
-
-			UIListLayout.Parent = SectionHandler
-			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-
-			UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
-
-
-				if UIListLayout.AbsoluteContentSize.Y <= 1 then
-					NeverLose.PlayAnimate(SectionFrame , VSlowTween , {
-						Size = UDim2.new(1, -5, 0, 0)
-					})
-				else
-					NeverLose.PlayAnimate(SectionFrame , VSlowTween , {
-						Size = UDim2.new(1, -5, 0, UIListLayout.AbsoluteContentSize.Y + 19.5)
-					})
-				end;
-			end));
-
-			local Section = NeverLose:RegisiterItem(SectionHandler , Tab.Signal);
-
-			Section.SetRender = LPH_NO_VIRTUALIZE(function(value)
-				if value then
-					NeverLose.PlayAnimate(SectionLabel,SlowyTween,{
-						TextTransparency = 0.500
-					})
-
-					NeverLose.PlayAnimate(SectionHandler,SlowyTween,{
-						BackgroundTransparency = 0.500
-					})
-
-					NeverLose.PlayAnimate(UIStroke,SlowyTween,{
-						Transparency = 0.650
-					})
-				else
-					NeverLose.PlayAnimate(SectionLabel,SlowyTween,{
-						TextTransparency = 1
-					})
-
-					NeverLose.PlayAnimate(SectionHandler,SlowyTween,{
-						BackgroundTransparency = 1
-					})
-
-					NeverLose.PlayAnimate(UIStroke,SlowyTween,{
-						Transparency = 1
-					})
-				end;
-			end);
-
-			Section.SetRender(Tab.Signal:GetValue());
-			Tab.Signal:Connect(Section.SetRender);
-
-			return Section;
-		end;
-
-		return Tab;
-	end;
-
-local function Tab:AddFullSection(Config)
-    Config = NeverLose:ProcessParams(Config, {
-        Name = "FULL SECTION",
-    })
-
-    local SectionFrame = Instance.new("Frame")
-    local SectionLabel = Instance.new("TextLabel")
-    local SectionHandler = Instance.new("Frame")
-    local UIStroke = Instance.new("UIStroke")
+    local TabButton = Instance.new("Frame")
     local UICorner = Instance.new("UICorner")
-    local UIListLayout = Instance.new("UIListLayout")
+    local TabIcon = Instance.new("TextLabel")
+    local TabContentLabel = Instance.new("TextLabel")
 
-    SectionFrame.Name = NeverLose.RandomString()
-    SectionFrame.Parent = FullContainer   -- NOT left/right
-    SectionFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
-    SectionFrame.BackgroundTransparency = 1
-    SectionFrame.BorderColor3 = Color3.fromRGB(0,0,0)
-    SectionFrame.BorderSizePixel = 0
-    SectionFrame.ClipsDescendants = true
-    SectionFrame.Size = UDim2.new(1, -5, 0, 0)
-    SectionFrame.ZIndex = 9
+    Tab.Idx = TabButton;
 
-    SectionLabel.Name = NeverLose.RandomString()
-    SectionLabel.Parent = SectionFrame
-    SectionLabel.AnchorPoint = Vector2.new(0.5, 0)
-    SectionLabel.BackgroundTransparency = 1
-    SectionLabel.Position = UDim2.new(0.5, 0, 0, 0)
-    SectionLabel.Size = UDim2.new(1, -35, 0, 15)
-    SectionLabel.ZIndex = 9
-    SectionLabel.Font = Enum.Font.GothamMedium
-    SectionLabel.Text = Config.Name
-    SectionLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    SectionLabel.TextSize = 11
-    SectionLabel.TextTransparency = 0.5
-    SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TabButton.Name = NeverLose.RandomString();
+    TabButton.Parent = LeftScrollingFrame
+    TabButton.BackgroundColor3 = Color3.fromRGB(41, 45, 49)
+    TabButton.BackgroundTransparency = 0.500
+    TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabButton.BorderSizePixel = 0
+    TabButton.Size = UDim2.new(1, -1, 0, 30)
+    TabButton.ZIndex = 8
 
-    SectionHandler.Name = NeverLose.RandomString()
-    SectionHandler.Parent = SectionFrame
-    SectionHandler.AnchorPoint = Vector2.new(0.5, 0)
-    SectionHandler.BackgroundColor3 = Color3.fromRGB(20,22,27)
-    SectionHandler.BackgroundTransparency = 0.5
-    SectionHandler.BorderColor3 = Color3.fromRGB(0,0,0)
-    SectionHandler.BorderSizePixel = 0
-    SectionHandler.ClipsDescendants = true
-    SectionHandler.Position = UDim2.new(0.5, 0, 0, 20)
-    SectionHandler.Size = UDim2.new(1, -10, 1, -21)
-    SectionHandler.ZIndex = 9
+    UICorner.CornerRadius = UDim.new(0, 6)
+    UICorner.Parent = TabButton
 
-    UIStroke.Transparency = 0.65
-    UIStroke.Color = Color3.fromRGB(45,48,58)
-    UIStroke.Parent = SectionHandler
+    TabIcon.Name = NeverLose.RandomString();
+    TabIcon.Parent = TabButton
+    TabIcon.AnchorPoint = Vector2.new(0, 0.5)
+    TabIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TabIcon.BackgroundTransparency = 1.000
+    TabIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabIcon.BorderSizePixel = 0
+    TabIcon.Position = UDim2.new(0, 2, 0.5, 0)
+    TabIcon.Size = UDim2.new(0, 25, 0, 25)
+    TabIcon.ZIndex = 9
+    TabIcon.FontFace = NeverLose.BuiltInBold
+    TabIcon.Text = Config.Icon;
+    TabIcon.TextColor3 = NeverLose.AccentColor
+    TabIcon.TextSize = 16.000
+    TabIcon.TextWrapped = true
 
-    UICorner.CornerRadius = UDim.new(0, 10)
-    UICorner.Parent = SectionHandler
+    TabContentLabel.Name = NeverLose.RandomString();
+    TabContentLabel.Parent = TabButton
+    TabContentLabel.AnchorPoint = Vector2.new(0, 0.5)
+    TabContentLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TabContentLabel.BackgroundTransparency = 1.000
+    TabContentLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabContentLabel.BorderSizePixel = 0
+    TabContentLabel.Position = UDim2.new(0, 30, 0.5, 0)
+    TabContentLabel.Size = UDim2.new(1, -7, 0, 15)
+    TabContentLabel.ZIndex = 9
+    TabContentLabel.Font = Enum.Font.GothamMedium
+    TabContentLabel.Text = Config.Name
+    TabContentLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TabContentLabel.TextSize = 12.000
+    TabContentLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-    UIListLayout.Parent = SectionHandler
-    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    -- ===== MAIN TAB FRAME (container for all sections) =====
+    local TabFrame = Instance.new("Frame")
+    TabFrame.Name = NeverLose.RandomString()
+    TabFrame.Parent = TabContainer
+    TabFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    TabFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TabFrame.BackgroundTransparency = 1.000
+    TabFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    TabFrame.BorderSizePixel = 0
+    TabFrame.ClipsDescendants = true
+    TabFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    TabFrame.Size = UDim2.new(1, 0, 1, 0)
+    TabFrame.Visible = true
 
-    UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        local contentHeight = UIListLayout.AbsoluteContentSize.Y
-        if contentHeight <= 1 then
-            SectionFrame.Size = UDim2.new(1, -5, 0, 0)
-        else
-            SectionFrame.Size = UDim2.new(1, -5, 0, contentHeight + 19.5)
-        end
-        updateFullHeight()   -- refresh column positions
+    -- Vertical layout inside TabFrame
+    local TabVerticalLayout = Instance.new("UIListLayout")
+    TabVerticalLayout.Parent = TabFrame
+    TabVerticalLayout.FillDirection = Enum.FillDirection.Vertical
+    TabVerticalLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabVerticalLayout.Padding = UDim.new(0, 0)
+    TabVerticalLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+    -- Full‑width container (for sections with Position = "Full")
+    local FullContainer = Instance.new("Frame")
+    FullContainer.Name = NeverLose.RandomString()
+    FullContainer.Parent = TabFrame
+    FullContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    FullContainer.BackgroundTransparency = 1.000
+    FullContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    FullContainer.BorderSizePixel = 0
+    FullContainer.ClipsDescendants = true
+    FullContainer.Size = UDim2.new(1, 0, 0, 0)   -- height set dynamically
+    FullContainer.LayoutOrder = 1
+
+    local FullScroll = Instance.new("ScrollingFrame")
+    FullScroll.Name = NeverLose.RandomString()
+    FullScroll.Parent = FullContainer
+    FullScroll.Active = true
+    FullScroll.AnchorPoint = Vector2.new(0.5, 0.5)
+    FullScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    FullScroll.BackgroundTransparency = 1.000
+    FullScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    FullScroll.BorderSizePixel = 0
+    FullScroll.Position = UDim2.new(0.5, 0, 0.5, 0)
+    FullScroll.Size = UDim2.new(1, 0, 1, 0)
+    FullScroll.ScrollBarThickness = 0
+    FullScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+    local FullListLayout = Instance.new("UIListLayout")
+    FullListLayout.Parent = FullScroll
+    FullListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    FullListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    FullListLayout.Padding = UDim.new(0, 5)
+
+    -- Auto‑resize FullContainer when content changes
+    FullListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+        local contentHeight = FullListLayout.AbsoluteContentSize.Y + 5
+        FullContainer.Size = UDim2.new(1, 0, 0, contentHeight)
+        FullScroll.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
     end)
 
-    local Section = NeverLose:RegisiterItem(SectionHandler, Tab.Signal)
+    -- Container for left/right split
+    local SplitContainer = Instance.new("Frame")
+    SplitContainer.Name = NeverLose.RandomString()
+    SplitContainer.Parent = TabFrame
+    SplitContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SplitContainer.BackgroundTransparency = 1.000
+    SplitContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SplitContainer.BorderSizePixel = 0
+    SplitContainer.ClipsDescendants = true
+    SplitContainer.Size = UDim2.new(1, 0, 1, 0)   -- takes remaining height
+    SplitContainer.LayoutOrder = 2
 
-    Section.SetRender = function(value)
-        if value then
-            NeverLose.PlayAnimate(SectionLabel, SlowyTween, { TextTransparency = 0.5 })
-            NeverLose.PlayAnimate(SectionHandler, SlowyTween, { BackgroundTransparency = 0.5 })
-            NeverLose.PlayAnimate(UIStroke, SlowyTween, { Transparency = 0.65 })
-        else
-            NeverLose.PlayAnimate(SectionLabel, SlowyTween, { TextTransparency = 1 })
-            NeverLose.PlayAnimate(SectionHandler, SlowyTween, { BackgroundTransparency = 1 })
-            NeverLose.PlayAnimate(UIStroke, SlowyTween, { Transparency = 1 })
-        end
+    -- LeftScroll (now parented to SplitContainer)
+    local LeftScroll = Instance.new("ScrollingFrame")
+    LeftScroll.Name = NeverLose.RandomString()
+    LeftScroll.Parent = SplitContainer
+    LeftScroll.Active = true
+    LeftScroll.AnchorPoint = Vector2.new(0.5, 0.5)
+    LeftScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    LeftScroll.BackgroundTransparency = 1.000
+    LeftScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    LeftScroll.BorderSizePixel = 0
+    LeftScroll.ClipsDescendants = false
+    LeftScroll.Position = UDim2.new(0.25, 0, 0.5, 0)
+    LeftScroll.Size = UDim2.new(0.5, 0, 1, -5)
+    LeftScroll.ScrollBarThickness = 0
+
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Parent = LeftScroll
+    UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Padding = UDim.new(0, 5)
+
+    -- RightScroll
+    local RightScroll = Instance.new("ScrollingFrame")
+    RightScroll.Name = NeverLose.RandomString()
+    RightScroll.Parent = SplitContainer
+    RightScroll.Active = true
+    RightScroll.AnchorPoint = Vector2.new(0.5, 0.5)
+    RightScroll.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    RightScroll.BackgroundTransparency = 1.000
+    RightScroll.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    RightScroll.BorderSizePixel = 0
+    RightScroll.ClipsDescendants = false
+    RightScroll.Position = UDim2.new(0.75, 0, 0.5, 0)
+    RightScroll.Size = UDim2.new(0.5, 0, 1, -5)
+    RightScroll.ScrollBarThickness = 0
+
+    local UIListLayout_2 = Instance.new("UIListLayout")
+    UIListLayout_2.Parent = RightScroll
+    UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout_2.Padding = UDim.new(0, 5)
+
+    -- Handle Single vs Double layout
+    if Config.Type == "Single" then
+        SplitContainer.Visible = false
+        FullContainer.Size = UDim2.new(1, 0, 1, 0)   -- full height
+    else
+        -- Double column: keep both
+        NeverLose:AddSignal(UIListLayout_2:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
+            RightScroll.CanvasSize = UDim2.fromOffset(0, UIListLayout_2.AbsoluteContentSize.Y + 1)
+        end)))
     end
 
-    Section.SetRender(Tab.Signal:GetValue())
-    Tab.Signal:Connect(Section.SetRender)
+    -- (remaining code for tab visibility, selection, etc.)
+    NeverLose:AddSignal(TabIcon:GetPropertyChangedSignal('TextTransparency'):Connect(LPH_NO_VIRTUALIZE(function()
+        if TabIcon.TextTransparency > 0.4 then
+            UIListLayout.Parent = nil;
+            UIListLayout_2.Parent = nil;
+            TabFrame.Visible = false;
+            TabFrame.Parent = nil
+        else
+            UIListLayout.Parent = LeftScroll;
+            UIListLayout_2.Parent = RightScroll;
+            TabFrame.Visible = true;
+            TabFrame.Parent = TabContainer;
+        end;
+    end)));
 
-    return Section
+    Tab.SetValue = LPH_NO_VIRTUALIZE(function(value)
+        Tab.Signal:SetValue(value);
+        if value then
+            NeverLose.PlayAnimate(TabButton , SlowyTween , { BackgroundTransparency = 0.500 })
+            NeverLose.PlayAnimate(TabIcon , SlowyTween , { TextTransparency = 0, TextColor3 = NeverLose.AccentColor })
+            NeverLose.PlayAnimate(TabContentLabel , SlowyTween , { TextTransparency = 0 })
+        else
+            NeverLose.PlayAnimate(TabButton , SlowyTween , { BackgroundTransparency = 1 })
+            NeverLose.PlayAnimate(TabIcon , SlowyTween , { TextTransparency = 0.5, TextColor3 = Color3.fromRGB(252, 252, 252) })
+            NeverLose.PlayAnimate(TabContentLabel , SlowyTween , { TextTransparency = 0.5 })
+        end;
+    end);
+
+    table.insert(Window.Tabs, Tab);
+
+    if Window.Tabs[Window.CurrentTab] == Tab then
+        Tab.SetValue(true)
+    else
+        Tab.SetValue(false);
+    end;
+
+    local over = NeverLose:CreateInput(TabButton, LPH_NO_VIRTUALIZE(function()
+        for i, v in next, Window.Tabs do
+            if v.Idx == TabButton then
+                v.SetValue(true);
+                Window.CurrentTab = i;
+            else
+                v.SetValue(false);
+            end;
+        end;
+    end));
+
+    NeverLose:AddSignal(over.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
+        if Window.Tabs[Window.CurrentTab] == Tab then
+            NeverLose.PlayAnimate(TabButton, SlowyTween, { BackgroundTransparency = 0.500 })
+        else
+            NeverLose.PlayAnimate(TabButton, SlowyTween, { BackgroundTransparency = 0.8 })
+        end;
+    end)))
+
+    NeverLose:AddSignal(over.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
+        if Window.Tabs[Window.CurrentTab] == Tab then
+            NeverLose.PlayAnimate(TabButton, SlowyTween, { BackgroundTransparency = 0.500 })
+        else
+            NeverLose.PlayAnimate(TabButton, SlowyTween, { BackgroundTransparency = 1 })
+        end;
+    end)))
+
+    Window.Signal:Connect(LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            if Window.Tabs[Window.CurrentTab] == Tab then
+                Tab.SetValue(true)
+            else
+                Tab.SetValue(false);
+            end;
+        else
+            Tab.SetValue(false);
+            NeverLose.PlayAnimate(TabButton, SlowyTween, { BackgroundTransparency = 1 })
+            NeverLose.PlayAnimate(TabIcon, SlowyTween, { TextTransparency = 1 })
+            NeverLose.PlayAnimate(TabContentLabel, SlowyTween, { TextTransparency = 1 })
+        end;
+    end));
+
+    -- ===== Tab:AddSection (modified to support "full") =====
+    function Tab:AddSection(Config)
+        Config = NeverLose:ProcessParams(Config , {
+            Name = "SECTION",
+            Position = 'left'   -- can be 'left', 'right', or 'full'
+        })
+
+        local SectionFrame = Instance.new("Frame")
+        local SectionLabel = Instance.new("TextLabel")
+        local SectionHandler = Instance.new("Frame")
+        local UIStroke = Instance.new("UIStroke")
+        local UICorner = Instance.new("UICorner")
+        local UIListLayout = Instance.new("UIListLayout")
+
+        -- Choose the parent scroll frame based on Position
+        local parentScroll
+        if string.lower(Config.Position) == 'full' then
+            parentScroll = FullScroll
+            FullContainer.Visible = true   -- ensure it's shown
+        elseif string.lower(Config.Position) == 'right' then
+            parentScroll = RightScroll
+        else
+            parentScroll = LeftScroll
+        end
+
+        SectionFrame.Name = NeverLose.RandomString()
+        SectionFrame.Parent = parentScroll
+        SectionFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        SectionFrame.BackgroundTransparency = 1.000
+        SectionFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        SectionFrame.BorderSizePixel = 0
+        SectionFrame.ClipsDescendants = true
+        SectionFrame.Size = UDim2.new(1, -5, 0, 0)
+        SectionFrame.ZIndex = 9
+
+        SectionLabel.Name = NeverLose.RandomString()
+        SectionLabel.Parent = SectionFrame
+        SectionLabel.AnchorPoint = Vector2.new(0.5, 0)
+        SectionLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        SectionLabel.BackgroundTransparency = 1.000
+        SectionLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        SectionLabel.BorderSizePixel = 0
+        SectionLabel.Position = UDim2.new(0.5, 0, 0, 0)
+        SectionLabel.Size = UDim2.new(1, -35, 0, 15)
+        SectionLabel.ZIndex = 9
+        SectionLabel.Font = Enum.Font.GothamMedium
+        SectionLabel.Text = Config.Name
+        SectionLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        SectionLabel.TextSize = 11.000
+        SectionLabel.TextTransparency = 0.500
+        SectionLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+        SectionHandler.Name = NeverLose.RandomString()
+        SectionHandler.Parent = SectionFrame
+        SectionHandler.AnchorPoint = Vector2.new(0.5, 0)
+        SectionHandler.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
+        SectionHandler.BackgroundTransparency = 0.500
+        SectionHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
+        SectionHandler.BorderSizePixel = 0
+        SectionHandler.ClipsDescendants = true
+        SectionHandler.Position = UDim2.new(0.5, 0, 0, 20)
+        SectionHandler.Size = UDim2.new(1, -10, 1, -21)
+        SectionHandler.ZIndex = 9
+
+        UIStroke.Transparency = 0.650
+        UIStroke.Color = Color3.fromRGB(45, 48, 58)
+        UIStroke.Parent = SectionHandler
+
+        UICorner.CornerRadius = UDim.new(0, 10)
+        UICorner.Parent = SectionHandler
+
+        UIListLayout.Parent = SectionHandler
+        UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+        UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
+            if UIListLayout.AbsoluteContentSize.Y <= 1 then
+                NeverLose.PlayAnimate(SectionFrame , VSlowTween , {
+                    Size = UDim2.new(1, -5, 0, 0)
+                })
+            else
+                NeverLose.PlayAnimate(SectionFrame , VSlowTween , {
+                    Size = UDim2.new(1, -5, 0, UIListLayout.AbsoluteContentSize.Y + 19.5)
+                })
+            end
+            -- Update parent scroll canvas size
+            local parent = SectionFrame.Parent
+            if parent:IsA("ScrollingFrame") then
+                local listLayout = parent:FindFirstChildOfClass("UIListLayout")
+                if listLayout then
+                    parent.CanvasSize = UDim2.fromOffset(0, listLayout.AbsoluteContentSize.Y + 5)
+                end
+            end
+        end))
+
+        local Section = NeverLose:RegisiterItem(SectionHandler , Tab.Signal)
+
+        Section.SetRender = LPH_NO_VIRTUALIZE(function(value)
+            if value then
+                NeverLose.PlayAnimate(SectionLabel,SlowyTween,{
+                    TextTransparency = 0.500
+                })
+                NeverLose.PlayAnimate(SectionHandler,SlowyTween,{
+                    BackgroundTransparency = 0.500
+                })
+                NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+                    Transparency = 0.650
+                })
+            else
+                NeverLose.PlayAnimate(SectionLabel,SlowyTween,{
+                    TextTransparency = 1
+                })
+                NeverLose.PlayAnimate(SectionHandler,SlowyTween,{
+                    BackgroundTransparency = 1
+                })
+                NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+                    Transparency = 1
+                })
+            end
+        end)
+
+        Section.SetRender(Tab.Signal:GetValue())
+        Tab.Signal:Connect(Section.SetRender)
+
+        return Section
+    end
+
+    return Tab;
 end
+
+FullListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+    local contentHeight = FullListLayout.AbsoluteContentSize.Y + 5
+    FullContainer.Size = UDim2.new(1, 0, 0, contentHeight)
+    FullScroll.CanvasSize = UDim2.new(0, 0, 0, contentHeight)
+end)
 
 	function Window:_InitConfig()
 		local ConfigSignal = NeverLose:CreateSignal(false);
