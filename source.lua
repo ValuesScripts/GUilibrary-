@@ -5137,7 +5137,8 @@ task.delay(0.1, updateFullHeight)   -- delay to let layout settle
 
 		return Tab;
 	end;
-function Tab:AddFullSection(Config)
+
+local function Tab:AddFullSection(Config)
     Config = NeverLose:ProcessParams(Config, {
         Name = "FULL SECTION",
     })
