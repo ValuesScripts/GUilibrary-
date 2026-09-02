@@ -5945,248 +5945,208 @@ end)));
 		end;
 	end;
 
-	function NeverLose:Watermark()
-    if NeverLose.__WatermarkCache then
-        return NeverLose.__WatermarkCache;
-    end;
+	function Window:Watermark()
+		if NeverLose.__WatermarkCache then
+			return NeverLose.__WatermarkCache;
+		end;
 
-    local Watermark_lb = {};
-    local Watermark = Instance.new("Frame")
-    local UICorner = Instance.new("UICorner")
-    local UIListLayout = Instance.new("UIListLayout")
-    local Shadow = NeverLose:CreateShadow(Watermark);
+		local Watermark_lb = {};
+		local Watermark = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local UIListLayout = Instance.new("UIListLayout")
+		local Shadow = NeverLose:CreateShadow(Watermark);
+		Watermark.Name = NeverLose.RandomString();
+		Watermark.Parent = NeverLose.ScreenGui
+		Watermark.AnchorPoint = Vector2.new(1, 0)
+		Watermark.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
+		Watermark.BackgroundTransparency = 0
+		Watermark.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Watermark.BorderSizePixel = 0
+		Watermark.ClipsDescendants = true
+		Watermark.Position = UDim2.new(1, -10, 0, 10)
+		Watermark.Size = UDim2.new(0, 120, 0, 20)
+		Watermark.ZIndex = 16
 
-    Watermark.Name = NeverLose.RandomString();
-    Watermark.Parent = NeverLose.ScreenGui
-    Watermark.AnchorPoint = Vector2.new(1, 0)
-    Watermark.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
-    Watermark.BackgroundTransparency = 0.2
-    Watermark.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    Watermark.BorderSizePixel = 0
-    Watermark.ClipsDescendants = true
-    Watermark.Position = UDim2.new(1, -10, 0, 10)
-    Watermark.Size = UDim2.new(0, 200, 0, 30)
-    Watermark.ZIndex = 16
+		UICorner.CornerRadius = UDim.new(0, 25)
+		UICorner.Parent = Watermark
 
-    UICorner.CornerRadius = UDim.new(0, 25)
-    UICorner.Parent = Watermark
+		UIListLayout.Parent = Watermark
+		UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 
-    UIListLayout.Parent = Watermark
-    UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Padding = UDim.new(0, 8)
-    UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+		local empty_space = Instance.new('Frame');
 
-    -- Make the watermark draggable
-    local DragFrame = Instance.new("Frame")
-    DragFrame.Parent = Watermark
-    DragFrame.BackgroundTransparency = 1
-    DragFrame.Size = UDim2.new(1, 0, 1, 0)
-    DragFrame.ZIndex = 20
-    NeverLose.Drag(DragFrame, Watermark, 0.15)
+		empty_space.Size = UDim2.fromOffset(15,0);
+		empty_space.BackgroundTransparency = 1;
+		empty_space.Parent = Watermark;
+		empty_space.LayoutOrder = 5;
 
-    -- Logo (icon or image)
-    local LogoImage
-    if NeverLose.GlobalLogo then
-        LogoImage = Instance.new("ImageLabel")
-        LogoImage.Parent = Watermark
-        LogoImage.BackgroundTransparency = 1
-        LogoImage.Size = UDim2.new(0, 20, 0, 20)
-        LogoImage.Image = NeverLose.GlobalLogo
-        LogoImage.ImageColor3 = Color3.fromRGB(255,255,255)
-        LogoImage.ImageTransparency = 0.2
-        LogoImage.ZIndex = 17
-    else
-        LogoImage = Instance.new("TextLabel")
-        LogoImage.Parent = Watermark
-        LogoImage.BackgroundTransparency = 1
-        LogoImage.Size = UDim2.new(0, 20, 0, 20)
-        LogoImage.FontFace = NeverLose.BuiltInBold
-        LogoImage.Text = ""  -- fallback icon
-        LogoImage.TextColor3 = Color3.fromRGB(255,255,255)
-        LogoImage.TextSize = 18
-        LogoImage.TextTransparency = 0.2
-        LogoImage.TextWrapped = true
-    end
+		Watermark:GetPropertyChangedSignal('BackgroundTransparency'):Connect(LPH_NO_VIRTUALIZE(function()
+			if Watermark.BackgroundTransparency > 0.9 then
+				Watermark.Visible = false;
+				Watermark.Parent = nil;
+			else
+				Watermark.Parent = NeverLose.ScreenGui
+				Watermark.Visible = true;
+			end;
+		end));
 
-    -- UI Name (big, white)
-    local UIName = Instance.new("TextLabel")
-    UIName.Parent = Watermark
-    UIName.BackgroundTransparency = 1
-    UIName.Size = UDim2.new(0, 0, 0, 25)
-    UIName.Font = Enum.Font.GothamBold
-    UIName.Text = "Neverlose"
-    UIName.TextColor3 = Color3.fromRGB(255,255,255)
-    UIName.TextSize = 20
-    UIName.TextTransparency = 0
-    UIName.TextXAlignment = Enum.TextXAlignment.Left
+		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
+			NeverLose.PlayAnimate(Watermark , SlowyTween , {
+				Size = UDim2.new(0, UIListLayout.AbsoluteContentSize.X + 5, 0, 30)
+			})
+		end));
 
-    -- Separator
-    local Sep1 = Instance.new("TextLabel")
-    Sep1.Parent = Watermark
-    Sep1.BackgroundTransparency = 1
-    Sep1.Size = UDim2.new(0, 5, 0, 20)
-    Sep1.Text = "|"
-    Sep1.TextColor3 = Color3.fromRGB(255,255,255)
-    Sep1.TextSize = 16
-    Sep1.TextTransparency = 0.5
+		NeverLose.__WatermarkCache = Watermark_lb;
 
-    -- Place Name
-    local PlaceName = Instance.new("TextLabel")
-    PlaceName.Parent = Watermark
-    PlaceName.BackgroundTransparency = 1
-    PlaceName.Size = UDim2.new(0, 0, 0, 20)
-    PlaceName.Font = Enum.Font.GothamMedium
-    local placeNameSuccess, placeName = pcall(function()
-        return game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
-    end)
-    PlaceName.Text = placeNameSuccess and placeName or tostring(game.PlaceId)
-    PlaceName.TextColor3 = Color3.fromRGB(255,255,255)
-    PlaceName.TextSize = 12
-    PlaceName.TextTransparency = 0.3
-    PlaceName.TextXAlignment = Enum.TextXAlignment.Left
+		--Shadow:Render(true);
 
-    -- Separator
-    local Sep2 = Instance.new("TextLabel")
-    Sep2.Parent = Watermark
-    Sep2.BackgroundTransparency = 1
-    Sep2.Size = UDim2.new(0, 5, 0, 20)
-    Sep2.Text = "|"
-    Sep2.TextColor3 = Color3.fromRGB(255,255,255)
-    Sep2.TextSize = 14
-    Sep2.TextTransparency = 0.5
+		Watermark_lb.Renders = {};
+		Watermark_lb.Status = true;
 
-    -- FPS
-    local FPSLabel = Instance.new("TextLabel")
-    FPSLabel.Parent = Watermark
-    FPSLabel.BackgroundTransparency = 1
-    FPSLabel.Size = UDim2.new(0, 0, 0, 20)
-    FPSLabel.Font = Enum.Font.GothamMedium
-    FPSLabel.Text = "FPS: 0"
-    FPSLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    FPSLabel.TextSize = 12
-    FPSLabel.TextTransparency = 0.3
-    FPSLabel.TextXAlignment = Enum.TextXAlignment.Left
+		function Watermark_lb:SetRender(value)
+			Watermark_lb.Status = value;
 
-    -- Ping
-    local PingLabel = Instance.new("TextLabel")
-    PingLabel.Parent = Watermark
-    PingLabel.BackgroundTransparency = 1
-    PingLabel.Size = UDim2.new(0, 0, 0, 20)
-    PingLabel.Font = Enum.Font.GothamMedium
-    PingLabel.Text = "Ping: 0"
-    PingLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    PingLabel.TextSize = 12
-    PingLabel.TextTransparency = 0.3
-    PingLabel.TextXAlignment = Enum.TextXAlignment.Left
+			if value then
+				NeverLose.PlayAnimate(Watermark,SlowyTween , {
+					BackgroundTransparency = 0.200
+				})
 
-    -- OS Time
-    local TimeLabel = Instance.new("TextLabel")
-    TimeLabel.Parent = Watermark
-    TimeLabel.BackgroundTransparency = 1
-    TimeLabel.Size = UDim2.new(0, 0, 0, 20)
-    TimeLabel.Font = Enum.Font.GothamMedium
-    TimeLabel.Text = os.date("%H:%M")
-    TimeLabel.TextColor3 = Color3.fromRGB(255,255,255)
-    TimeLabel.TextSize = 12
-    TimeLabel.TextTransparency = 0.3
-    TimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+				--Shadow:Render(true);
 
-    -- Auto-resize watermark based on content
-    local function UpdateSizes()
-        local totalWidth = 0;
-        local maxHeight = 0;
-        for _, child in pairs(Watermark:GetChildren()) do
-            if child:IsA("TextLabel") and child.Visible then
-                local size = TextService:GetTextSize(child.Text, child.TextSize, child.Font, Vector2.new(math.huge, math.huge))
-                child.Size = UDim2.new(0, size.X + 4, 0, math.max(size.Y, 20))
-                totalWidth = totalWidth + size.X + 4;
-                if size.Y > maxHeight then maxHeight = size.Y end
-            elseif child:IsA("ImageLabel") then
-                totalWidth = totalWidth + 24; -- image size
-            elseif child:IsA("TextLabel") and child.Text == "|" then
-                local size = TextService:GetTextSize(child.Text, child.TextSize, child.Font, Vector2.new(math.huge, math.huge))
-                child.Size = UDim2.new(0, size.X + 2, 0, 20)
-                totalWidth = totalWidth + size.X + 2;
-            end
-        end
-        Watermark.Size = UDim2.new(0, totalWidth + 20, 0, maxHeight + 10)
-    end
+				for i,v in next , Watermark_lb.Renders do
+					pcall(v,true);
+				end;
+			else
+				NeverLose.PlayAnimate(Watermark,SlowyTween , {
+					BackgroundTransparency = 1
+				})
 
-    -- Update on text changes
-    for _, child in pairs(Watermark:GetChildren()) do
-        if child:IsA("TextLabel") then
-            child:GetPropertyChangedSignal("Text"):Connect(UpdateSizes)
-        end
-    end
-    UpdateSizes()
+				--Shadow:Render(false);
 
-    -- Stats update loop
-    local frameCount = 0
-    local lastTime = tick()
-    local fps = 0
+				for i,v in next , Watermark_lb.Renders do
+					pcall(v,false);
+				end;
+			end
+		end;
 
-    local stats = game:GetService("Stats")
-    local pingStat = stats.Network.ServerStatsItem["Data Ping"]
+		function Watermark_lb:AddBlock(IconStr , Name)
+			local InnerBlock = {};
 
-    local function UpdateStats()
-        -- FPS
-        frameCount = frameCount + 1
-        local now = tick()
-        if now - lastTime >= 1 then
-            fps = frameCount
-            frameCount = 0
-            lastTime = now
-            FPSLabel.Text = "FPS: " .. tostring(fps)
-        end
+			local Frame = Instance.new("Frame")
+			local Content = Instance.new("TextLabel")
+			local Icon = Instance.new("TextLabel")
 
-        -- Ping
-        local ping = pingStat:GetValueString()
-        PingLabel.Text = "Ping: " .. tostring(ping)
+			Frame.Parent = Watermark
+			Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Frame.BackgroundTransparency = 1.000
+			Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Frame.BorderSizePixel = 0
+			Frame.Size = UDim2.new(0, 50, 0, 30)
 
-        -- Time
-        TimeLabel.Text = os.date("%H:%M")
-    end
+			Content.Name = NeverLose.RandomString();
+			Content.Parent = Frame
+			Content.AnchorPoint = Vector2.new(0, 0.5)
+			Content.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
+			Content.BackgroundTransparency = 1.000
+			Content.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Content.BorderSizePixel = 0
+			Content.Position = UDim2.new(0, 35, 0.5, 0)
+			Content.Size = UDim2.new(0, 1, 0, 25)
+			Content.ZIndex = 17
+			Content.Font = Enum.Font.GothamBold
+			Content.Text = Name
+			Content.TextColor3 = Color3.fromRGB(186, 186, 186)
+			Content.TextSize = 15.000
+			Content.TextTransparency = 0.200
+			Content.TextXAlignment = Enum.TextXAlignment.Left
 
-    local loopConnection = RunService.Heartbeat:Connect(UpdateStats)
-    table.insert(NeverLose.GlobalSignals, loopConnection)
+			Icon.Name = NeverLose.RandomString();
+			Icon.Parent = Frame
+			Icon.AnchorPoint = Vector2.new(0, 0.5)
+			Icon.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
+			Icon.BackgroundTransparency = 1.000
+			Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Icon.BorderSizePixel = 0
+			Icon.Position = UDim2.new(0, 10, 0.5, 0)
+			Icon.Size = UDim2.new(0, 20, 0, 20)
+			Icon.ZIndex = 17
+			Icon.FontFace = NeverLose.BuiltInBold;
+			Icon.Text = IconStr
+			Icon.TextColor3 = NeverLose.AccentColor
+			Icon.TextSize = 18.000
+			Icon.TextTransparency = 0.250
+			Icon.TextWrapped = true
 
-    -- Public methods (compatible with old API)
-    Watermark_lb.Status = true;
+			InnerBlock.Update = LPH_NO_VIRTUALIZE(function(value)
+				local size = TextService:GetTextSize(Content.Text , Content.TextSize,Content.Font,Vector2.new(math.huge,math.huge))
 
-    function Watermark_lb:SetRender(value)
-        Watermark_lb.Status = value;
-        if value then
-            Watermark.Visible = true;
-            Watermark.Parent = NeverLose.ScreenGui;
-            Shadow:Render(true);
-        else
-            Watermark.Visible = false;
-            Watermark.Parent = nil;
-            Shadow:Render(false);
-        end
-    end
+				if InnerBlock.Visible then
+					NeverLose.PlayAnimate(Frame,VSlowTween,{
+						Size = UDim2.new(0, size.X + 35, 0, 30)
+					})
+				else
+					NeverLose.PlayAnimate(Frame,VSlowTween,{
+						Size = UDim2.new(0, 0, 0, 30)
+					})
+				end;
+			end);
 
-    function Watermark_lb:SetUIName(name)
-        UIName.Text = name;
-    end
+			InnerBlock.Visible = true;
 
-    function Watermark_lb:SetPlaceName(name)
-        PlaceName.Text = name;
-    end
+			InnerBlock.Update();
 
-    -- Stubs for old AddBlock method (if needed)
-    function Watermark_lb:AddBlock(...)
-        -- dummy
-    end
+			function InnerBlock:SetVisible(v)
+				InnerBlock.Visible = v;
 
-    -- Show watermark initially
-    Shadow:Render(true);
-    Watermark_lb:SetRender(true);
+				if Watermark_lb.Status then
+					InnerBlock.SetRender(v);
+				end;
 
-    NeverLose.__WatermarkCache = Watermark_lb;
-    return Watermark_lb;
-end
+				InnerBlock.Update();
+			end;
+
+			InnerBlock.SetRender = LPH_NO_VIRTUALIZE(function(value)
+				if value and InnerBlock.Visible then
+					NeverLose.PlayAnimate(Content,SlowyTween , {
+						TextTransparency = 0.200
+					})
+
+					NeverLose.PlayAnimate(Icon,SlowyTween , {
+						TextTransparency = 0.250
+					})
+				else
+
+					NeverLose.PlayAnimate(Content,SlowyTween , {
+						TextTransparency = 1
+					})
+
+					NeverLose.PlayAnimate(Icon,SlowyTween , {
+						TextTransparency = 1
+					})
+				end;
+			end);
+
+			table.insert(Watermark_lb.Renders,InnerBlock.SetRender);
+
+			function InnerBlock:SetText(t)
+				Content.Text = t;
+
+				InnerBlock.Update();
+			end;
+
+			function InnerBlock:Input(func)
+				local c,s = NeverLose:CreateInput(Frame,func);
+
+				return s;
+			end;
+
+			return InnerBlock;
+		end;
+
+		return Watermark_lb;
+	end;
 
 	Window:SetRender(false);
 
