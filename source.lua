@@ -193,7 +193,7 @@ NeverLose.IconColor = Color3.fromRGB(255, 255, 255);
 NeverLose.ScreenGui = GlobalWindow;
 NeverLose.Flags = {};
 NeverLose.AccentColor = Color3.fromRGB(78, 127, 252);
-NeverLose.MainColor = Color3.fromRGB(8, 8, 13);
+NeverLose.MainColor = Color3.fromRGB(19, 19, 21);
 NeverLose.RegisiteryColor = {};
 NeverLose.NameRegisitry = {};
 NeverLose.IsMosueOverOtherFrame = false;
@@ -4345,7 +4345,7 @@ Window.Shadow = { Render = function() end };  -- dummy object
 
 	RightMenuFrame.Name = NeverLose.RandomString();
 	RightMenuFrame.Parent = WindowFrame
-	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
+	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(19,19,21)
 	RightMenuFrame.BackgroundTransparency = 0
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
@@ -6549,7 +6549,7 @@ function NeverLose:CreateIndicator()
 		local Shadow = NeverLose:CreateShadow(IndicatorItem);
 
 		IndicatorItem.Name = NeverLose.RandomString();
-		IndicatorItem.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
+		IndicatorItem.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
 		IndicatorItem.BackgroundTransparency = 1
 		IndicatorItem.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		IndicatorItem.BorderSizePixel = 0
