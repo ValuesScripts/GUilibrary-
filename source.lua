@@ -1232,7 +1232,7 @@ function NeverLose:CreateOptionWindow(Frame: Frame , Zindex)
 	OptionHandler.Name = NeverLose.RandomString();
 	OptionHandler.Parent = NeverLose.ScreenGui
 	OptionHandler.AnchorPoint = Vector2.new(0, 0)
-	OptionHandler.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
+	OptionHandler.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
 	OptionHandler.BackgroundTransparency = 0.035
 	OptionHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	OptionHandler.BorderSizePixel = 0
@@ -1367,7 +1367,7 @@ function NeverLose:CreateColorPicker(HandleFrame: Frame)
 	ColorPickerHandler.Name = NeverLose.RandomString();
 	ColorPickerHandler.Parent = NeverLose.ScreenGui
 	ColorPickerHandler.AnchorPoint = Vector2.new(0, 0)
-	ColorPickerHandler.BackgroundColor3 = Color3.fromRGB(20, 22, 27)
+	ColorPickerHandler.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
 	ColorPickerHandler.BackgroundTransparency = 0.035
 	ColorPickerHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ColorPickerHandler.BorderSizePixel = 0
@@ -2163,7 +2163,7 @@ function NeverLose:RegisiterHandler(Handler: Frame , Signal)
 
 		Option.Name = NeverLose.RandomString();
 		Option.Parent = Handler
-		Option.BackgroundColor3 = Color3.fromRGB(39, 40, 49)
+		Option.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
 		Option.BackgroundTransparency = 1.000
 		Option.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Option.BorderSizePixel = 0
@@ -4114,12 +4114,9 @@ end
 				TextTransparency = 1
 			})
 
-			Window.Shadow:Render(false);
-		end;
-	end);
+			
 
-	Window.Shadow = NeverLose:CreateShadow(WindowFrame);
-	Window.Shadow:Render(false);
+	
 
 	task.delay(0.25,function()
 		WindowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -5954,7 +5951,7 @@ end)));
 		local Watermark = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
 		local UIListLayout = Instance.new("UIListLayout")
-		local Shadow = NeverLose:CreateShadow(Watermark);
+		
 
 		Watermark.Name = NeverLose.RandomString();
 		Watermark.Parent = NeverLose.ScreenGui
