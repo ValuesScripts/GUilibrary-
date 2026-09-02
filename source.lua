@@ -4345,8 +4345,8 @@ Window.Shadow = { Render = function() end };  -- dummy object
 
 	RightMenuFrame.Name = NeverLose.RandomString();
 	RightMenuFrame.Parent = WindowFrame
-	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(8, 8, 13)
-	RightMenuFrame.BackgroundTransparency = 0.600
+	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
+	RightMenuFrame.BackgroundTransparency = 0
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
 	RightMenuFrame.ClipsDescendants = true
