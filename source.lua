@@ -4026,7 +4026,7 @@ end
 				TextTransparency = 0.350
 			})
 
-			Window.Shadow:Render(true);
+			--Window.Shadow:Render(true);
 		else
 
 			NeverLose.PlayAnimate(WindowFrame , SlowyTween , {
@@ -4114,9 +4114,12 @@ end
 				TextTransparency = 1
 			})
 
-			
+			--Window.Shadow:Render(false);
+		end;
+	end);
 
-	
+	-- Shadow disabled
+Window.Shadow = { Render = function() end };  -- dummy object
 
 	task.delay(0.25,function()
 		WindowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -5951,8 +5954,7 @@ end)));
 		local Watermark = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
 		local UIListLayout = Instance.new("UIListLayout")
-		
-
+		local Shadow = NeverLose:CreateShadow(Watermark);
 		Watermark.Name = NeverLose.RandomString();
 		Watermark.Parent = NeverLose.ScreenGui
 		Watermark.AnchorPoint = Vector2.new(1, 0)
@@ -5998,7 +6000,7 @@ end)));
 
 		NeverLose.__WatermarkCache = Watermark_lb;
 
-		Shadow:Render(true);
+		--Shadow:Render(true);
 
 		Watermark_lb.Renders = {};
 		Watermark_lb.Status = true;
@@ -6011,7 +6013,7 @@ end)));
 					BackgroundTransparency = 0.200
 				})
 
-				Shadow:Render(true);
+				--Shadow:Render(true);
 
 				for i,v in next , Watermark_lb.Renders do
 					pcall(v,true);
@@ -6021,7 +6023,7 @@ end)));
 					BackgroundTransparency = 1
 				})
 
-				Shadow:Render(false);
+				--Shadow:Render(false);
 
 				for i,v in next , Watermark_lb.Renders do
 					pcall(v,false);
