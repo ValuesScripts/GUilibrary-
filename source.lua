@@ -5967,7 +5967,7 @@ end)));
 		Watermark.Size = UDim2.new(0, 120, 0, 20)
 		Watermark.ZIndex = 16
 
-		UICorner.CornerRadius = UDim.new(0, 25)
+		UICorner.CornerRadius = UDim.new(0, 10)
 		UICorner.Parent = Watermark
 
 		UIListLayout.Parent = Watermark
@@ -6284,7 +6284,7 @@ function NeverLose:CreateNotification()
 
 		NotifyFrame.Size = UDim2.new(0, MainSize + 65, 0, 55);
 
-		shadow:Render(true)
+		--shadow:Render(true)
 		NeverLose.PlayAnimate(NotifyFrame , VSlowTween , {
 			Position = UDim2.new(1, 0, 0, 0)
 		})
@@ -6299,7 +6299,7 @@ function NeverLose:CreateNotification()
 				});
 			end;
 
-			shadow:Render(false)
+			--shadow:Render(false)
 
 			NeverLose.PlayAnimate(NotifyFrame , SlowyTween , {
 				BackgroundTransparency = 1
