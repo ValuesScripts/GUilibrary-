@@ -5945,7 +5945,8 @@ end)));
 		end;
 	end;
 
-	function NeverLose:Watermark(Config)
+-- ===== UPDATED WATERMARK WITH TITLE =====
+function NeverLose:Watermark(Config)
     Config = Config or {}
     if NeverLose.__WatermarkCache then
         return NeverLose.__WatermarkCache
@@ -5957,13 +5958,13 @@ end)));
     local MarketplaceService = cloneref(game:GetService('MarketplaceService'))
     local HttpService = cloneref(game:GetService('HttpService'))
 
-    -- Create the main bar
+    -- Main bar
     local Bar = Instance.new('Frame')
     Bar.Name = NeverLose.RandomString()
     Bar.Parent = NeverLose.ScreenGui
     Bar.AnchorPoint = Vector2.new(0.5, 0)
     Bar.Position = UDim2.new(0.5, 0, 0, 14)
-    Bar.Size = UDim2.new(0, 0, 0, 32)
+    Bar.Size = UDim2.new(0, 0, 0, 36)  -- slightly taller for big title
     Bar.BackgroundColor3 = NeverLose.MainColor
     Bar.BackgroundTransparency = 0.2
     Bar.BorderSizePixel = 0
@@ -5975,9 +5976,8 @@ end)));
     Corner.CornerRadius = UDim.new(0, 8)
     Corner.Parent = Bar
 
-    -- Shadow
     local shadow = NeverLose:CreateShadow(Bar)
-    shadow:Render(true)
+    --shadow:Render(true)
 
     local Padding = Instance.new('UIPadding')
     Padding.PaddingLeft = UDim.new(0, 12)
@@ -6002,16 +6002,35 @@ end)));
     IconLabel.Name = NeverLose.RandomString()
     IconLabel.Parent = Bar
     IconLabel.BackgroundTransparency = 1
-    IconLabel.Size = UDim2.new(0, 20, 0, 20)
+    IconLabel.Size = UDim2.new(0, 22, 0, 22)
     IconLabel.FontFace = NeverLose.BuiltInBold
     IconLabel.Text = Config.Icon or '3d-cube-arrow-left'
     IconLabel.TextColor3 = NeverLose.IconColor or Color3.fromRGB(255,255,255)
-    IconLabel.TextSize = 20
+    IconLabel.TextSize = 22
     IconLabel.TextWrapped = true
     IconLabel.LayoutOrder = nextOrder()
     IconLabel.ZIndex = 61
 
-    -- Separator
+    -- === NEW: Title label (big white text) ===
+    local TitleLabel = nil
+    if Config.Title and Config.Title ~= '' then
+        TitleLabel = Instance.new('TextLabel')
+        TitleLabel.Name = NeverLose.RandomString()
+        TitleLabel.Parent = Bar
+        TitleLabel.BackgroundTransparency = 1
+        TitleLabel.Size = UDim2.new(0, 0, 0, 28)
+        TitleLabel.Font = Enum.Font.GothamBold
+        TitleLabel.Text = Config.Title
+        TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TitleLabel.TextSize = 20  -- big
+        TitleLabel.TextTransparency = 0
+        TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+        TitleLabel.LayoutOrder = nextOrder()
+        TitleLabel.ZIndex = 61
+        TitleLabel.AutomaticSize = Enum.AutomaticSize.X
+    end
+
+    -- Separator (after title)
     local function separator()
         local sep = Instance.new('Frame')
         sep.Name = NeverLose.RandomString()
@@ -6097,7 +6116,7 @@ end)));
     TimeLabel.ZIndex = 61
     TimeLabel.AutomaticSize = Enum.AutomaticSize.X
 
-    -- Make draggable
+    -- Drag
     NeverLose.Drag(Bar, Bar, 0.15)
 
     -- Fetch game name
@@ -6112,7 +6131,7 @@ end)));
         end
     end)
 
-    -- Update loop for FPS, ping, time
+    -- Update loop
     local frames = 0
     local renderConnection = RunService.RenderStepped:Connect(function()
         frames = frames + 1
@@ -6136,9 +6155,9 @@ end)));
             TimeLabel.Text = os.date('%I:%M %p')
         end
     end)
-    NeverLose:AddSignal(updateThread) -- not a signal but we can store for cleanup
+    NeverLose:AddSignal(updateThread)
 
-    -- Methods
+    -- Public methods
     function Watermark:SetIcon(icon)
         IconLabel.Text = icon
     end
@@ -6147,15 +6166,21 @@ end)));
         GameLabel.Text = name
     end
 
+    function Watermark:SetTitle(text)
+        if TitleLabel then
+            TitleLabel.Text = text
+        end
+    end
+
     function Watermark:SetVisible(bool)
         if bool then
             Bar.Visible = true
             Bar.BackgroundTransparency = 0.2
-            shadow:Render(true)
+            --shadow:Render(true)
         else
             Bar.Visible = false
             Bar.BackgroundTransparency = 1
-            shadow:Render(false)
+            --shadow:Render(false)
         end
     end
 
@@ -6163,6 +6188,7 @@ end)));
     NeverLose.__WatermarkCache = Watermark
     Watermark.Bar = Bar
     Watermark.IconLabel = IconLabel
+    Watermark.TitleLabel = TitleLabel
     Watermark.GameLabel = GameLabel
     Watermark.FpsLabel = FpsLabel
     Watermark.PingLabel = PingLabel
