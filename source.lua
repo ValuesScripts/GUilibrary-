@@ -5946,6 +5946,7 @@ end)));
 	end;
 
 -- ===== UPDATED WATERMARK WITH TITLE =====
+-- ===== UPDATED WATERMARK (no icon, fully opaque) =====
 function NeverLose:Watermark(Config)
     Config = Config or {}
     if NeverLose.__WatermarkCache then
@@ -5956,17 +5957,16 @@ function NeverLose:Watermark(Config)
     local RunService = cloneref(game:GetService('RunService'))
     local StatsService = cloneref(game:GetService('Stats'))
     local MarketplaceService = cloneref(game:GetService('MarketplaceService'))
-    local HttpService = cloneref(game:GetService('HttpService'))
 
-    -- Main bar
+    -- Main bar – fully opaque
     local Bar = Instance.new('Frame')
     Bar.Name = NeverLose.RandomString()
     Bar.Parent = NeverLose.ScreenGui
     Bar.AnchorPoint = Vector2.new(0.5, 0)
     Bar.Position = UDim2.new(0.5, 0, 0, 14)
-    Bar.Size = UDim2.new(0, 0, 0, 30)  -- slightly taller for big title
+    Bar.Size = UDim2.new(0, 0, 0, 30)
     Bar.BackgroundColor3 = NeverLose.MainColor
-    Bar.BackgroundTransparency = 0
+    Bar.BackgroundTransparency = 0   -- fully opaque
     Bar.BorderSizePixel = 0
     Bar.ClipsDescendants = true
     Bar.ZIndex = 60
@@ -5977,7 +5977,6 @@ function NeverLose:Watermark(Config)
     Corner.Parent = Bar
 
     local shadow = NeverLose:CreateShadow(Bar)
-    --shadow:Render(true)
 
     local Padding = Instance.new('UIPadding')
     Padding.PaddingLeft = UDim.new(0, 12)
@@ -5997,21 +5996,7 @@ function NeverLose:Watermark(Config)
         return order
     end
 
-    -- Icon
-    local IconLabel = Instance.new('TextLabel')
-    IconLabel.Name = NeverLose.RandomString()
-    IconLabel.Parent = Bar
-    IconLabel.BackgroundTransparency = 1
-    IconLabel.Size = UDim2.new(0, 22, 0, 22)
-    IconLabel.FontFace = NeverLose.BuiltInBold
-    IconLabel.Text = Config.Icon or '3d-cube-arrow-left'
-    IconLabel.TextColor3 = NeverLose.IconColor or Color3.fromRGB(255,255,255)
-    IconLabel.TextSize = 22
-    IconLabel.TextWrapped = true
-    IconLabel.LayoutOrder = nextOrder()
-    IconLabel.ZIndex = 61
-
-    -- === NEW: Title label (big white text) ===
+    -- Title label (big white text) – no icon
     local TitleLabel = nil
     if Config.Title and Config.Title ~= '' then
         TitleLabel = Instance.new('TextLabel')
@@ -6022,7 +6007,7 @@ function NeverLose:Watermark(Config)
         TitleLabel.Font = Enum.Font.GothamBold
         TitleLabel.Text = Config.Title
         TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TitleLabel.TextSize = 20  -- big
+        TitleLabel.TextSize = 20
         TitleLabel.TextTransparency = 0
         TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
         TitleLabel.LayoutOrder = nextOrder()
@@ -6030,7 +6015,7 @@ function NeverLose:Watermark(Config)
         TitleLabel.AutomaticSize = Enum.AutomaticSize.X
     end
 
-    -- Separator (after title)
+    -- Separator function
     local function separator()
         local sep = Instance.new('Frame')
         sep.Name = NeverLose.RandomString()
@@ -6157,7 +6142,7 @@ function NeverLose:Watermark(Config)
     end)
     NeverLose:AddSignal(updateThread)
 
-
+    -- Public methods
     function Watermark:SetGameName(name)
         GameLabel.Text = name
     end
@@ -6172,12 +6157,26 @@ function NeverLose:Watermark(Config)
         if bool then
             Bar.Visible = true
             Bar.BackgroundTransparency = 0
-            --shadow:Render(true)
         else
             Bar.Visible = false
             Bar.BackgroundTransparency = 1
-            --shadow:Render(false)
         end
+    end
+
+    -- Make the title clickable to toggle the interface
+    if TitleLabel then
+        local btn = Instance.new('TextButton')
+        btn.Name = NeverLose.RandomString()
+        btn.Parent = TitleLabel
+        btn.BackgroundTransparency = 1
+        btn.Size = UDim2.new(1, 0, 1, 0)
+        btn.ZIndex = 100
+        btn.Text = ''
+        btn.MouseButton1Click:Connect(function()
+            if window and window.ToggleInterface then
+                window:ToggleInterface()
+            end
+        end)
     end
 
     -- Cache
@@ -6328,22 +6327,49 @@ function NeverLose:CreateNotification()
 
 		NotifyFrame.Size = UDim2.new(0, MainSize + 65, 0, 55);
 
-		--shadow:Render(true)
+		-- === DURATION LINE (thin, accent-colored) ===
+		local LineBack = Instance.new("Frame")
+		LineBack.Name = NeverLose.RandomString()
+		LineBack.Parent = NotifyFrame
+		LineBack.AnchorPoint = Vector2.new(0, 1)
+		LineBack.Position = UDim2.new(0, 10, 1, -6)
+		LineBack.Size = UDim2.new(1, -20, 0, 2)
+		LineBack.BackgroundColor3 = Color3.fromRGB(45, 48, 58)
+		LineBack.BackgroundTransparency = 0.5
+		LineBack.BorderSizePixel = 0
+		LineBack.ZIndex = 132
+
+		local LineFill = Instance.new("Frame")
+		LineFill.Name = NeverLose.RandomString()
+		LineFill.Parent = LineBack
+		LineFill.Size = UDim2.new(1, 0, 1, 0)
+		LineFill.BackgroundColor3 = NeverLose.AccentColor
+		LineFill.BorderSizePixel = 0
+		LineFill.ZIndex = 133
+		LineFill.BackgroundTransparency = 0
+
+		-- Register gradient for accent (optional, but keeps consistency)
+		NeverLose:RegisterGradient(LineFill)
+
+		shadow:Render(true)
 		NeverLose.PlayAnimate(NotifyFrame , VSlowTween , {
 			Position = UDim2.new(1, 0, 0, 0)
 		})
 
 		ContainerFrame.Size = UDim2.new(0, 0, 0, 65)
 
-		task.delay(Config.Duration or 5 , LPH_NO_VIRTUALIZE(function()
+		-- Shrink the fill over duration
+		local Countdown = TweenInfo.new(Config.Duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
+		TweenService:Create(LineFill, Countdown, { Size = UDim2.new(0, 0, 1, 0) }):Play()
 
+		task.delay(Config.Duration or 5 , LPH_NO_VIRTUALIZE(function()
 			if NeverLose.__WatermarkCache then
 				NeverLose.PlayAnimate(Notification,SlowyTween , {
 					Position = UDim2.new(1, -25, 0, 55)
 				});
 			end;
 
-			--shadow:Render(false)
+			shadow:Render(false)
 
 			NeverLose.PlayAnimate(NotifyFrame , SlowyTween , {
 				BackgroundTransparency = 1
@@ -6378,7 +6404,7 @@ function NeverLose:CreateNotification()
 	end;
 
 	return Notifier;
-end;
+end
 
 function NeverLose:CreateLogger()
 	if NeverLose.__LogSystem then
