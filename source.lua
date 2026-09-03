@@ -5945,208 +5945,232 @@ end)));
 		end;
 	end;
 
-	function Window:Watermark()
-		if NeverLose.__WatermarkCache then
-			return NeverLose.__WatermarkCache;
-		end;
+	function NeverLose:Watermark(Config)
+    Config = Config or {}
+    if NeverLose.__WatermarkCache then
+        return NeverLose.__WatermarkCache
+    end
 
-		local Watermark_lb = {};
-		local Watermark = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local UIListLayout = Instance.new("UIListLayout")
-		local Shadow = NeverLose:CreateShadow(Watermark);
-		Watermark.Name = NeverLose.RandomString();
-		Watermark.Parent = NeverLose.ScreenGui
-		Watermark.AnchorPoint = Vector2.new(1, 0)
-		Watermark.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
-		Watermark.BackgroundTransparency = 0
-		Watermark.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Watermark.BorderSizePixel = 0
-		Watermark.ClipsDescendants = true
-		Watermark.Position = UDim2.new(1, -10, 0, 10)
-		Watermark.Size = UDim2.new(0, 120, 0, 20)
-		Watermark.ZIndex = 16
+    local Watermark = {}
+    local RunService = cloneref(game:GetService('RunService'))
+    local StatsService = cloneref(game:GetService('Stats'))
+    local MarketplaceService = cloneref(game:GetService('MarketplaceService'))
+    local HttpService = cloneref(game:GetService('HttpService'))
 
-		UICorner.CornerRadius = UDim.new(0, 10)
-		UICorner.Parent = Watermark
+    -- Create the main bar
+    local Bar = Instance.new('Frame')
+    Bar.Name = NeverLose.RandomString()
+    Bar.Parent = NeverLose.ScreenGui
+    Bar.AnchorPoint = Vector2.new(0.5, 0)
+    Bar.Position = UDim2.new(0.5, 0, 0, 14)
+    Bar.Size = UDim2.new(0, 0, 0, 32)
+    Bar.BackgroundColor3 = NeverLose.MainColor
+    Bar.BackgroundTransparency = 0.2
+    Bar.BorderSizePixel = 0
+    Bar.ClipsDescendants = true
+    Bar.ZIndex = 60
+    Bar.AutomaticSize = Enum.AutomaticSize.X
 
-		UIListLayout.Parent = Watermark
-		UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+    local Corner = Instance.new('UICorner')
+    Corner.CornerRadius = UDim.new(0, 8)
+    Corner.Parent = Bar
 
-		local empty_space = Instance.new('Frame');
+    -- Shadow
+    local shadow = NeverLose:CreateShadow(Bar)
+    shadow:Render(true)
 
-		empty_space.Size = UDim2.fromOffset(15,0);
-		empty_space.BackgroundTransparency = 1;
-		empty_space.Parent = Watermark;
-		empty_space.LayoutOrder = 5;
+    local Padding = Instance.new('UIPadding')
+    Padding.PaddingLeft = UDim.new(0, 12)
+    Padding.PaddingRight = UDim.new(0, 12)
+    Padding.Parent = Bar
 
-		Watermark:GetPropertyChangedSignal('BackgroundTransparency'):Connect(LPH_NO_VIRTUALIZE(function()
-			if Watermark.BackgroundTransparency > 0.9 then
-				Watermark.Visible = false;
-				Watermark.Parent = nil;
-			else
-				Watermark.Parent = NeverLose.ScreenGui
-				Watermark.Visible = true;
-			end;
-		end));
+    local Layout = Instance.new('UIListLayout')
+    Layout.FillDirection = Enum.FillDirection.Horizontal
+    Layout.VerticalAlignment = Enum.VerticalAlignment.Center
+    Layout.SortOrder = Enum.SortOrder.LayoutOrder
+    Layout.Padding = UDim.new(0, 10)
+    Layout.Parent = Bar
 
-		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
-			NeverLose.PlayAnimate(Watermark , SlowyTween , {
-				Size = UDim2.new(0, UIListLayout.AbsoluteContentSize.X + 5, 0, 30)
-			})
-		end));
+    local order = 0
+    local function nextOrder()
+        order = order + 1
+        return order
+    end
 
-		NeverLose.__WatermarkCache = Watermark_lb;
+    -- Icon
+    local IconLabel = Instance.new('TextLabel')
+    IconLabel.Name = NeverLose.RandomString()
+    IconLabel.Parent = Bar
+    IconLabel.BackgroundTransparency = 1
+    IconLabel.Size = UDim2.new(0, 20, 0, 20)
+    IconLabel.FontFace = NeverLose.BuiltInBold
+    IconLabel.Text = Config.Icon or '3d-cube-arrow-left'
+    IconLabel.TextColor3 = NeverLose.IconColor or Color3.fromRGB(255,255,255)
+    IconLabel.TextSize = 20
+    IconLabel.TextWrapped = true
+    IconLabel.LayoutOrder = nextOrder()
+    IconLabel.ZIndex = 61
 
-		--Shadow:Render(true);
+    -- Separator
+    local function separator()
+        local sep = Instance.new('Frame')
+        sep.Name = NeverLose.RandomString()
+        sep.Parent = Bar
+        sep.Size = UDim2.new(0, 1, 0, 14)
+        sep.BackgroundColor3 = Color3.fromRGB(45, 48, 58)
+        sep.BackgroundTransparency = 0.65
+        sep.BorderSizePixel = 0
+        sep.LayoutOrder = nextOrder()
+        sep.ZIndex = 61
+        return sep
+    end
 
-		Watermark_lb.Renders = {};
-		Watermark_lb.Status = true;
+    separator()
 
-		function Watermark_lb:SetRender(value)
-			Watermark_lb.Status = value;
+    -- Game Name
+    local GameLabel = Instance.new('TextLabel')
+    GameLabel.Name = NeverLose.RandomString()
+    GameLabel.Parent = Bar
+    GameLabel.BackgroundTransparency = 1
+    GameLabel.Size = UDim2.new(0, 0, 0, 16)
+    GameLabel.Font = Enum.Font.GothamMedium
+    GameLabel.Text = 'Loading...'
+    GameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    GameLabel.TextSize = 14
+    GameLabel.TextTransparency = 0.4
+    GameLabel.TextXAlignment = Enum.TextXAlignment.Left
+    GameLabel.LayoutOrder = nextOrder()
+    GameLabel.ZIndex = 61
+    GameLabel.AutomaticSize = Enum.AutomaticSize.X
 
-			if value then
-				NeverLose.PlayAnimate(Watermark,SlowyTween , {
-					BackgroundTransparency = 0.200
-				})
+    separator()
 
-				--Shadow:Render(true);
+    -- FPS
+    local FpsLabel = Instance.new('TextLabel')
+    FpsLabel.Name = NeverLose.RandomString()
+    FpsLabel.Parent = Bar
+    FpsLabel.BackgroundTransparency = 1
+    FpsLabel.Size = UDim2.new(0, 0, 0, 16)
+    FpsLabel.Font = Enum.Font.GothamMedium
+    FpsLabel.Text = '0 fps'
+    FpsLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    FpsLabel.TextSize = 14
+    FpsLabel.TextTransparency = 0.4
+    FpsLabel.TextXAlignment = Enum.TextXAlignment.Left
+    FpsLabel.LayoutOrder = nextOrder()
+    FpsLabel.ZIndex = 61
+    FpsLabel.AutomaticSize = Enum.AutomaticSize.X
 
-				for i,v in next , Watermark_lb.Renders do
-					pcall(v,true);
-				end;
-			else
-				NeverLose.PlayAnimate(Watermark,SlowyTween , {
-					BackgroundTransparency = 1
-				})
+    separator()
 
-				--Shadow:Render(false);
+    -- Ping
+    local PingLabel = Instance.new('TextLabel')
+    PingLabel.Name = NeverLose.RandomString()
+    PingLabel.Parent = Bar
+    PingLabel.BackgroundTransparency = 1
+    PingLabel.Size = UDim2.new(0, 0, 0, 16)
+    PingLabel.Font = Enum.Font.GothamMedium
+    PingLabel.Text = '0 ms'
+    PingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    PingLabel.TextSize = 14
+    PingLabel.TextTransparency = 0.4
+    PingLabel.TextXAlignment = Enum.TextXAlignment.Left
+    PingLabel.LayoutOrder = nextOrder()
+    PingLabel.ZIndex = 61
+    PingLabel.AutomaticSize = Enum.AutomaticSize.X
 
-				for i,v in next , Watermark_lb.Renders do
-					pcall(v,false);
-				end;
-			end
-		end;
+    separator()
 
-		function Watermark_lb:AddBlock(IconStr , Name)
-			local InnerBlock = {};
+    -- Time
+    local TimeLabel = Instance.new('TextLabel')
+    TimeLabel.Name = NeverLose.RandomString()
+    TimeLabel.Parent = Bar
+    TimeLabel.BackgroundTransparency = 1
+    TimeLabel.Size = UDim2.new(0, 0, 0, 16)
+    TimeLabel.Font = Enum.Font.GothamMedium
+    TimeLabel.Text = os.date('%I:%M %p')
+    TimeLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TimeLabel.TextSize = 14
+    TimeLabel.TextTransparency = 0.4
+    TimeLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TimeLabel.LayoutOrder = nextOrder()
+    TimeLabel.ZIndex = 61
+    TimeLabel.AutomaticSize = Enum.AutomaticSize.X
 
-			local Frame = Instance.new("Frame")
-			local Content = Instance.new("TextLabel")
-			local Icon = Instance.new("TextLabel")
+    -- Make draggable
+    NeverLose.Drag(Bar, Bar, 0.15)
 
-			Frame.Parent = Watermark
-			Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-			Frame.BackgroundTransparency = 1.000
-			Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Frame.BorderSizePixel = 0
-			Frame.Size = UDim2.new(0, 50, 0, 30)
+    -- Fetch game name
+    task.spawn(function()
+        local success, info = pcall(function()
+            return MarketplaceService:GetProductInfo(game.PlaceId)
+        end)
+        if success and info and info.Name then
+            GameLabel.Text = info.Name
+        else
+            GameLabel.Text = 'Unknown Game'
+        end
+    end)
 
-			Content.Name = NeverLose.RandomString();
-			Content.Parent = Frame
-			Content.AnchorPoint = Vector2.new(0, 0.5)
-			Content.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
-			Content.BackgroundTransparency = 1.000
-			Content.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Content.BorderSizePixel = 0
-			Content.Position = UDim2.new(0, 35, 0.5, 0)
-			Content.Size = UDim2.new(0, 1, 0, 25)
-			Content.ZIndex = 17
-			Content.Font = Enum.Font.GothamBold
-			Content.Text = Name
-			Content.TextColor3 = Color3.fromRGB(186, 186, 186)
-			Content.TextSize = 15.000
-			Content.TextTransparency = 0.200
-			Content.TextXAlignment = Enum.TextXAlignment.Left
+    -- Update loop for FPS, ping, time
+    local frames = 0
+    local renderConnection = RunService.RenderStepped:Connect(function()
+        frames = frames + 1
+    end)
+    NeverLose:AddSignal(renderConnection)
 
-			Icon.Name = NeverLose.RandomString();
-			Icon.Parent = Frame
-			Icon.AnchorPoint = Vector2.new(0, 0.5)
-			Icon.BackgroundColor3 = Color3.fromRGB(186, 186, 186)
-			Icon.BackgroundTransparency = 1.000
-			Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Icon.BorderSizePixel = 0
-			Icon.Position = UDim2.new(0, 10, 0.5, 0)
-			Icon.Size = UDim2.new(0, 20, 0, 20)
-			Icon.ZIndex = 17
-			Icon.FontFace = NeverLose.BuiltInBold;
-			Icon.Text = IconStr
-			Icon.TextColor3 = NeverLose.AccentColor
-			Icon.TextSize = 18.000
-			Icon.TextTransparency = 0.250
-			Icon.TextWrapped = true
+    local updateThread = task.spawn(function()
+        while true do
+            task.wait(0.5)
+            if not Bar.Parent then break end
+            FpsLabel.Text = tostring(frames * 2) .. ' fps'
+            frames = 0
 
-			InnerBlock.Update = LPH_NO_VIRTUALIZE(function(value)
-				local size = TextService:GetTextSize(Content.Text , Content.TextSize,Content.Font,Vector2.new(math.huge,math.huge))
+            local ping = 0
+            pcall(function()
+                local stat = StatsService.Network.ServerStatsItem['Data Ping']
+                ping = math.floor(stat:GetValue())
+            end)
+            PingLabel.Text = tostring(ping) .. ' ms'
 
-				if InnerBlock.Visible then
-					NeverLose.PlayAnimate(Frame,VSlowTween,{
-						Size = UDim2.new(0, size.X + 35, 0, 30)
-					})
-				else
-					NeverLose.PlayAnimate(Frame,VSlowTween,{
-						Size = UDim2.new(0, 0, 0, 30)
-					})
-				end;
-			end);
+            TimeLabel.Text = os.date('%I:%M %p')
+        end
+    end)
+    NeverLose:AddSignal(updateThread) -- not a signal but we can store for cleanup
 
-			InnerBlock.Visible = true;
+    -- Methods
+    function Watermark:SetIcon(icon)
+        IconLabel.Text = icon
+    end
 
-			InnerBlock.Update();
+    function Watermark:SetGameName(name)
+        GameLabel.Text = name
+    end
 
-			function InnerBlock:SetVisible(v)
-				InnerBlock.Visible = v;
+    function Watermark:SetVisible(bool)
+        if bool then
+            Bar.Visible = true
+            Bar.BackgroundTransparency = 0.2
+            shadow:Render(true)
+        else
+            Bar.Visible = false
+            Bar.BackgroundTransparency = 1
+            shadow:Render(false)
+        end
+    end
 
-				if Watermark_lb.Status then
-					InnerBlock.SetRender(v);
-				end;
+    -- Cache
+    NeverLose.__WatermarkCache = Watermark
+    Watermark.Bar = Bar
+    Watermark.IconLabel = IconLabel
+    Watermark.GameLabel = GameLabel
+    Watermark.FpsLabel = FpsLabel
+    Watermark.PingLabel = PingLabel
+    Watermark.TimeLabel = TimeLabel
 
-				InnerBlock.Update();
-			end;
+    return Watermark
+end
 
-			InnerBlock.SetRender = LPH_NO_VIRTUALIZE(function(value)
-				if value and InnerBlock.Visible then
-					NeverLose.PlayAnimate(Content,SlowyTween , {
-						TextTransparency = 0.200
-					})
-
-					NeverLose.PlayAnimate(Icon,SlowyTween , {
-						TextTransparency = 0.250
-					})
-				else
-
-					NeverLose.PlayAnimate(Content,SlowyTween , {
-						TextTransparency = 1
-					})
-
-					NeverLose.PlayAnimate(Icon,SlowyTween , {
-						TextTransparency = 1
-					})
-				end;
-			end);
-
-			table.insert(Watermark_lb.Renders,InnerBlock.SetRender);
-
-			function InnerBlock:SetText(t)
-				Content.Text = t;
-
-				InnerBlock.Update();
-			end;
-
-			function InnerBlock:Input(func)
-				local c,s = NeverLose:CreateInput(Frame,func);
-
-				return s;
-			end;
-
-			return InnerBlock;
-		end;
-
-		return Watermark_lb;
-	end;
 	Window:SetRender(false);
 
 	return Window;
