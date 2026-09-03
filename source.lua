@@ -5951,18 +5951,16 @@ function Window:Watermark()
         return NeverLose.__WatermarkBar
     end
 
-    -- Services (already available in NeverLose environment)
     local RunService = cloneref(game:GetService("RunService"))
     local StatsService = cloneref(game:GetService("Stats"))
 
-    -- Create the main bar
     local Bar = Instance.new("Frame")
     Bar.Name = NeverLose.RandomString()
     Bar.Parent = NeverLose.ScreenGui
     Bar.AnchorPoint = Vector2.new(0.5, 0)
     Bar.Position = UDim2.new(0.5, 0, 0, 14)
     Bar.Size = UDim2.new(0, 0, 0, 32)
-    Bar.BackgroundColor3 = Color3.fromRGB(19, 19, 21)  -- NeverLose's dark background
+    Bar.BackgroundColor3 = Color3.fromRGB(19, 19, 21)
     Bar.BackgroundTransparency = 0
     Bar.BorderSizePixel = 0
     Bar.ZIndex = 60
@@ -5972,7 +5970,6 @@ function Window:Watermark()
     local UICorner = Instance.new("UICorner", Bar)
     UICorner.CornerRadius = UDim.new(0, 8)
 
-    -- Padding and layout
     local UIPadding = Instance.new("UIPadding", Bar)
     UIPadding.PaddingLeft = UDim.new(0, 12)
     UIPadding.PaddingRight = UDim.new(0, 12)
@@ -5983,18 +5980,16 @@ function Window:Watermark()
     UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
     UIListLayout.Padding = UDim.new(0, 10)
 
-    -- Icon (using NeverLose's built-in bold font)
     local Icon = Instance.new("TextLabel", Bar)
     Icon.Name = NeverLose.RandomString()
     Icon.BackgroundTransparency = 1
     Icon.Size = UDim2.fromOffset(20, 20)
     Icon.FontFace = NeverLose.BuiltInBold
-    Icon.Text = "layers"  -- default icon, change via SetIcon
+    Icon.Text = "layers"
     Icon.TextColor3 = Color3.fromRGB(255, 255, 255)
     Icon.TextSize = 20
     Icon.LayoutOrder = 1
 
-    -- Helper to create separators
     local function Separator()
         local Sep = Instance.new("Frame", Bar)
         Sep.BackgroundColor3 = Color3.fromRGB(45, 48, 58)
@@ -6004,22 +5999,20 @@ function Window:Watermark()
         Sep.LayoutOrder = #Bar:GetChildren() + 1
     end
 
-    -- Helper to create stat labels
     local function Stat(Text)
         local Label = Instance.new("TextLabel", Bar)
         Label.BackgroundTransparency = 1
         Label.Size = UDim2.fromOffset(0, 16)
         Label.AutomaticSize = Enum.AutomaticSize.X
-        Label.Font = Enum.Font.GothamMedium  -- or NeverLose.BuiltInRegular
+        Label.Font = Enum.Font.GothamMedium
         Label.Text = Text
-        Label.TextColor3 = Color3.fromRGB(120, 120, 120)  -- DimText
+        Label.TextColor3 = Color3.fromRGB(120, 120, 120)
         Label.TextSize = 14
         Label.TextTransparency = 0.35
         Label.LayoutOrder = #Bar:GetChildren() + 1
         return Label
     end
 
-    -- Build the bar components
     Separator()
     local GameStat = Stat("...")
     Separator()
@@ -6029,10 +6022,8 @@ function Window:Watermark()
     Separator()
     local TimeStat = Stat(os.date("%I:%M %p"))
 
-    -- Make it draggable (uses NeverLose.Drag)
     NeverLose.Drag(Bar, Bar, 0.15)
 
-    -- Update stats
     local Frames = 0
     local RenderSteppedConn = RunService.RenderStepped:Connect(function()
         Frames = Frames + 1
@@ -6054,7 +6045,6 @@ function Window:Watermark()
         end
     end)
 
-    -- Watermark API
     local Watermark = {
         Instance = Bar,
         __connections = { RenderSteppedConn, UpdateThread }
@@ -6064,18 +6054,19 @@ function Window:Watermark()
         Icon.Text = NewIcon
     end
 
-    function Watermark:SetName() end  -- not used, kept for compatibility
+    function Watermark:SetName() end
 
     function Watermark:SetVisible(Bool)
         Bar.Visible = Bool
     end
 
-    -- Also hide on window close? (optional)
-    local origSetRender = self.SetRender
-    self.SetRender = function(val)
-        origSetRender(val)
+    -- 🔁 Bind visibility to window state (without overriding SetRender)
+    self.Signal:Connect(function(val)
         Bar.Visible = val
-    end
+    end)
+
+    -- Show by default (the signal will set it properly)
+    Bar.Visible = true
 
     NeverLose.__WatermarkBar = Watermark
     return Watermark
