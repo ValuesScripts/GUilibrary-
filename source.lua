@@ -5964,7 +5964,7 @@ function NeverLose:Watermark(Config)
     Bar.Parent = NeverLose.ScreenGui
     Bar.AnchorPoint = Vector2.new(0.5, 0)
     Bar.Position = UDim2.new(0.5, 0, 0, 14)
-    Bar.Size = UDim2.new(0, 0, 0, 36)  -- slightly taller for big title
+    Bar.Size = UDim2.new(0, 0, 0, 30)  -- slightly taller for big title
     Bar.BackgroundColor3 = NeverLose.MainColor
     Bar.BackgroundTransparency = 0
     Bar.BorderSizePixel = 0
@@ -6171,7 +6171,7 @@ function NeverLose:Watermark(Config)
     function Watermark:SetVisible(bool)
         if bool then
             Bar.Visible = true
-            Bar.BackgroundTransparency = 0.2
+            Bar.BackgroundTransparency = 0
             --shadow:Render(true)
         else
             Bar.Visible = false
