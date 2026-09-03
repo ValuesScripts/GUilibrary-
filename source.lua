@@ -5966,7 +5966,7 @@ function NeverLose:Watermark(Config)
     Bar.Position = UDim2.new(0.5, 0, 0, 14)
     Bar.Size = UDim2.new(0, 0, 0, 36)  -- slightly taller for big title
     Bar.BackgroundColor3 = NeverLose.MainColor
-    Bar.BackgroundTransparency = 0.2
+    Bar.BackgroundTransparency = 0
     Bar.BorderSizePixel = 0
     Bar.ClipsDescendants = true
     Bar.ZIndex = 60
