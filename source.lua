@@ -6037,7 +6037,7 @@ function NeverLose:Watermark(Config)
         sep.Parent = Bar
         sep.Size = UDim2.new(0, 1, 0, 14)
         sep.BackgroundColor3 = Color3.fromRGB(45, 48, 58)
-        sep.BackgroundTransparency = 0.65
+        sep.BackgroundTransparency = 0
         sep.BorderSizePixel = 0
         sep.LayoutOrder = nextOrder()
         sep.ZIndex = 61
@@ -6157,10 +6157,6 @@ function NeverLose:Watermark(Config)
     end)
     NeverLose:AddSignal(updateThread)
 
-    -- Public methods
-    function Watermark:SetIcon(icon)
-        IconLabel.Text = icon
-    end
 
     function Watermark:SetGameName(name)
         GameLabel.Text = name
@@ -6187,7 +6183,6 @@ function NeverLose:Watermark(Config)
     -- Cache
     NeverLose.__WatermarkCache = Watermark
     Watermark.Bar = Bar
-    Watermark.IconLabel = IconLabel
     Watermark.TitleLabel = TitleLabel
     Watermark.GameLabel = GameLabel
     Watermark.FpsLabel = FpsLabel
