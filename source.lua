@@ -4629,6 +4629,44 @@ Window.Shadow = { Render = function() end };  -- dummy object
 	TabContainer.Size = UDim2.new(1, 0, 1, -50)
 	TabContainer.ZIndex = 5
 
+	local SettingsIcon = Instance.new("TextLabel");
+SettingsIcon.Name = NeverLose.RandomString();
+SettingsIcon.Parent = RightHeader;
+SettingsIcon.AnchorPoint = Vector2.new(1, 0.5);
+SettingsIcon.BackgroundTransparency = 1;
+SettingsIcon.Position = UDim2.new(1, -10, 0.5, 0);
+SettingsIcon.Size = UDim2.new(0, 30, 0, 30);
+SettingsIcon.FontFace = NeverLose.BuiltInBold;
+SettingsIcon.Text = "gear";   -- or "settings"
+SettingsIcon.TextColor3 = Color3.fromRGB(223, 223, 223);
+SettingsIcon.TextSize = 18;
+SettingsIcon.TextTransparency = 0.25;
+SettingsIcon.TextWrapped = true;
+SettingsIcon.ZIndex = 12;
+
+-- Clickable button over the gear
+local SettingsHit = NeverLose:CreateInput(SettingsIcon, function()
+    -- Open a settings popup (we'll create one later)
+    if window.SettingsPopup then
+        window.SettingsPopup:SetOpen(not window.SettingsPopup:GetValue());
+    else
+        -- Create settings popup
+        local popup = NeverLose:CreateOptionWindow(SettingsIcon, SettingsIcon.ZIndex + 10);
+        popup:AddLabel("Keybinds");
+        -- Add keybind for menu toggle, etc.
+        popup:AddKeybind({
+            Name = "Menu Toggle",
+            Default = "Insert",
+            Callback = function(k)
+                Window.Keybind = k;
+            end,
+            Flag = "MenuKeybind",
+        });
+        window.SettingsPopup = popup;
+        popup.Signal:SetValue(true);
+    end
+end);
+
 	do
 		Window.Searching = false;
 		local Input = NeverLose:CreateInput(SearchIcon , LPH_NO_VIRTUALIZE(function()
