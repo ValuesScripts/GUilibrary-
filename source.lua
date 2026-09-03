@@ -1644,6 +1644,117 @@ function NeverLose:CreateColorPicker(HandleFrame: Frame)
 	return ColorPickerLib;
 end;
 
+-- ===== KEYBIND SYSTEM (Zolar-style) =====
+function NeverLose:CreateKeybind(Config)
+    Config = NeverLose:ProcessParams(Config, {
+        Name = "Keybind",
+        Default = nil,          -- initial key (string or Enum.KeyCode)
+        Callback = EmptyFunction,
+        Flag = nil,
+    });
+
+    local KeybindLib = {};
+    local Keybind = Instance.new("Frame");
+    local UICorner = Instance.new("UICorner");
+    local UIStroke = Instance.new("UIStroke");
+    local ValueLabel = Instance.new("TextLabel");
+
+    -- The actual keybind button (will be placed in a handler)
+    Keybind.Name = NeverLose.RandomString();
+    Keybind.BackgroundColor3 = Color3.fromRGB(26, 28, 36);
+    Keybind.BackgroundTransparency = 0;
+    Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0);
+    Keybind.BorderSizePixel = 0;
+    Keybind.ClipsDescendants = true;
+    Keybind.Size = UDim2.new(0, 60, 0, 18);
+    Keybind.ZIndex = 13;
+
+    UICorner.CornerRadius = UDim.new(0, 4);
+    UICorner.Parent = Keybind;
+
+    UIStroke.Transparency = 0.650;
+    UIStroke.Color = Color3.fromRGB(45, 48, 58);
+    UIStroke.Parent = Keybind;
+
+    ValueLabel.Name = NeverLose.RandomString();
+    ValueLabel.Parent = Keybind;
+    ValueLabel.AnchorPoint = Vector2.new(0.5, 0.5);
+    ValueLabel.BackgroundTransparency = 1;
+    ValueLabel.Position = UDim2.new(0.5, 0, 0.5, 0);
+    ValueLabel.Size = UDim2.new(1, -10, 1, 0);
+    ValueLabel.Font = Enum.Font.GothamMedium;
+    ValueLabel.Text = NeverLose:KeyCodeToStr(Config.Default or "None");
+    ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255);
+    ValueLabel.TextSize = 10;
+    ValueLabel.TextTransparency = 0.5;
+    ValueLabel.ZIndex = 14;
+
+    -- Call this to update the displayed key
+    function KeybindLib:Update()
+        local size = TextService:GetTextSize(ValueLabel.Text, ValueLabel.TextSize, ValueLabel.Font, Vector2.new(math.huge, math.huge));
+        Keybind.Size = UDim2.new(0, size.X + 12, 0, 18);
+    end
+
+    KeybindLib.Update();
+
+    -- Click to open key capture
+    local IsBinding = false;
+    local Button = NeverLose:CreateInput(Keybind, function()
+        if IsBinding then return end;
+        IsBinding = true;
+        ValueLabel.Text = "...";
+        KeybindLib:Update();
+
+        local Selected = nil;
+        while not Selected do
+            local Key = UserInputService.InputBegan:Wait();
+            if Key.KeyCode ~= Enum.KeyCode.Unknown then
+                Selected = Key.KeyCode;
+            elseif Key.UserInputType == Enum.UserInputType.MouseButton1 then
+                Selected = "M1B";
+            elseif Key.UserInputType == Enum.UserInputType.MouseButton2 then
+                Selected = "M2B";
+            end
+        end
+
+        IsBinding = false;
+        local KeyName = typeof(Selected) == "string" and Selected or Selected.Name;
+        Config.Default = KeyName;
+        ValueLabel.Text = NeverLose:KeyCodeToStr(KeyName);
+        KeybindLib:Update();
+        Config.Callback(KeyName);
+        if Config.Flag then
+            NeverLose.Flags[Config.Flag] = KeyName;
+        end
+    end);
+
+    -- SetValue method
+    function KeybindLib:SetValue(v)
+        Config.Default = v;
+        ValueLabel.Text = NeverLose:KeyCodeToStr(v);
+        KeybindLib:Update();
+        Config.Callback(v);
+        if Config.Flag then
+            NeverLose.Flags[Config.Flag] = v;
+        end
+    end
+
+    function KeybindLib:GetValue()
+        return Config.Default;
+    end
+
+    function KeybindLib:GetRoot()
+        return Keybind;
+    end
+
+    -- Register flag if any
+    if Config.Flag then
+        NeverLose.Flags[Config.Flag] = Config.Default;
+    end
+
+    return KeybindLib;
+end
+
 NeverLose.KeyEnum = {
 	One = '1',
 	Two = '2',
