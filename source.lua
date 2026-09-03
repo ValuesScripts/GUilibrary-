@@ -6196,6 +6196,7 @@ end
 	return Window;
 end;
 
+
 function NeverLose:CreateNotification()
 	if NeverLose.__Notification_Cache then
 		return NeverLose.__Notification_Cache;
@@ -6379,27 +6380,6 @@ function NeverLose:CreateNotification()
 	return Notifier;
 end;
 
-
-
-
-loadSettings()
-toggleAntiAfk(_G.AntiAfkEnabled)
-
-task.spawn(function()
-    task.wait(0.5)
-    if _G.SilentAimMobile then createSilentAimMobileButton() end
-    if _G.KnifeMobileEnabled then createKnifeMobileButton() end
-    if _G.GrabGunMobile then createGrabGunMobileButton() end
-end)
-
-
-task.delay(1, function()
-    Notification.new({ Title = "Ruthless Hub", Content = "Click the watermark to toggle the interface", Duration = 10 })
-end)
-
-task.delay(1, function()
-    Notification.new({ Title = "Ruthless Hub", Content = "LControl to toggle the interface", Duration = 10 })
-end)
 function NeverLose:CreateLogger()
 	if NeverLose.__LogSystem then
 		return 	NeverLose.__LogSystem;
