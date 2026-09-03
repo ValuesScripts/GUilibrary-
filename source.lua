@@ -6328,49 +6328,22 @@ function NeverLose:CreateNotification()
 
 		NotifyFrame.Size = UDim2.new(0, MainSize + 65, 0, 55);
 
-		-- === DURATION LINE (thin, accent-colored) ===
-		local LineBack = Instance.new("Frame")
-		LineBack.Name = NeverLose.RandomString()
-		LineBack.Parent = NotifyFrame
-		LineBack.AnchorPoint = Vector2.new(0, 1)
-		LineBack.Position = UDim2.new(0, 10, 1, -6)
-		LineBack.Size = UDim2.new(1, -20, 0, 2)
-		LineBack.BackgroundColor3 = Color3.fromRGB(45, 48, 58)
-		LineBack.BackgroundTransparency = 0.5
-		LineBack.BorderSizePixel = 0
-		LineBack.ZIndex = 132
-
-		local LineFill = Instance.new("Frame")
-		LineFill.Name = NeverLose.RandomString()
-		LineFill.Parent = LineBack
-		LineFill.Size = UDim2.new(1, 0, 1, 0)
-		LineFill.BackgroundColor3 = NeverLose.AccentColor
-		LineFill.BorderSizePixel = 0
-		LineFill.ZIndex = 133
-		LineFill.BackgroundTransparency = 0
-
-		-- Register gradient for accent (optional, but keeps consistency)
-		NeverLose:RegisterGradient(LineFill)
-
-		shadow:Render(true)
+		--shadow:Render(true)
 		NeverLose.PlayAnimate(NotifyFrame , VSlowTween , {
 			Position = UDim2.new(1, 0, 0, 0)
 		})
 
 		ContainerFrame.Size = UDim2.new(0, 0, 0, 65)
 
-		-- Shrink the fill over duration
-		local Countdown = TweenInfo.new(Config.Duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-		TweenService:Create(LineFill, Countdown, { Size = UDim2.new(0, 0, 1, 0) }):Play()
-
 		task.delay(Config.Duration or 5 , LPH_NO_VIRTUALIZE(function()
+
 			if NeverLose.__WatermarkCache then
 				NeverLose.PlayAnimate(Notification,SlowyTween , {
 					Position = UDim2.new(1, -25, 0, 55)
 				});
 			end;
 
-			shadow:Render(false)
+			--shadow:Render(false)
 
 			NeverLose.PlayAnimate(NotifyFrame , SlowyTween , {
 				BackgroundTransparency = 1
@@ -6405,7 +6378,8 @@ function NeverLose:CreateNotification()
 	end;
 
 	return Notifier;
-end
+end;
+
 
 function NeverLose:CreateLogger()
 	if NeverLose.__LogSystem then
