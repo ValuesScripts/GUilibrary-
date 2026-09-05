@@ -1821,451 +1821,487 @@ function NeverLose:RegisiterHandler(Handler: Frame , Signal)
 	local ZINdex = Handler.ZIndex;
 
 	function handle:AddToggle(Config)
-		Config = NeverLose:ProcessParams(Config , {
-			Default = false,
-			Flag = nil,
-			Callback = EmptyFunction,
-		});
+    Config = NeverLose:ProcessParams(Config , {
+        Default = false,
+        Flag = nil,
+        Callback = EmptyFunction,
+    });
 
-		local Toggle = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local Circle = Instance.new("Frame")
-		local UICorner_2 = Instance.new("UICorner")
+    local Toggle = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local CheckMark = Instance.new("TextLabel")  -- Changed from Circle to CheckMark
 
-		Toggle.Name = NeverLose.RandomString();
-		Toggle.Parent = Handler
-		Toggle.BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-		Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Toggle.BorderSizePixel = 0
-		Toggle.ClipsDescendants = true
-		Toggle.Size = UDim2.new(0, 30, 0, 18)
-		Toggle.ZIndex = ZINdex + 13
-		Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
+    Toggle.Name = NeverLose.RandomString();
+    Toggle.Parent = Handler
+    Toggle.BackgroundColor3 = Color3.fromRGB(26, 28, 36)  -- Dark background
+    Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Toggle.BorderSizePixel = 0
+    Toggle.ClipsDescendants = true
+    Toggle.Size = UDim2.new(0, 18, 0, 18)  -- Square checkbox
+    Toggle.ZIndex = ZINdex + 13
+    Toggle.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(1, 0)
-		UICorner.Parent = Toggle
+    UICorner.CornerRadius = UDim.new(0, 4)  -- Slight rounding
+    UICorner.Parent = Toggle
 
-		Circle.Name = NeverLose.RandomString();
-		Circle.Parent = Toggle
-		Circle.AnchorPoint = Vector2.new(0.5, 0.5)
-		Circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Circle.BackgroundTransparency = 0.500
-		Circle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Circle.BorderSizePixel = 0
-		Circle.Position = UDim2.new(0.300000012, 0, 0.5, 0)
-		Circle.Size = UDim2.new(0, 16, 0, 16)
-		Circle.ZIndex = ZINdex + 14
+    -- Checkmark icon (appears when checked)
+    CheckMark.Name = NeverLose.RandomString();
+    CheckMark.Parent = Toggle
+    CheckMark.AnchorPoint = Vector2.new(0.5, 0.5)
+    CheckMark.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    CheckMark.BackgroundTransparency = 1.000
+    CheckMark.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    CheckMark.BorderSizePixel = 0
+    CheckMark.Position = UDim2.new(0.5, 0, 0.5, 0)
+    CheckMark.Size = UDim2.new(1, 0, 1, 0)
+    CheckMark.ZIndex = ZINdex + 14
+    CheckMark.FontFace = NeverLose.BuiltInBold
+    CheckMark.Text = "check"  -- Using the check icon from your icon system
+    CheckMark.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CheckMark.TextSize = 12.000
+    CheckMark.TextTransparency = 1  -- Hidden by default
+    CheckMark.TextWrapped = true
 
-		UICorner_2.CornerRadius = UDim.new(1, 0)
-		UICorner_2.Parent = Circle
+    -- Optional border stroke for the checkbox
+    local UIStroke = Instance.new("UIStroke")
+    UIStroke.Thickness = 1.5
+    UIStroke.Transparency = 0.650
+    UIStroke.Color = Color3.fromRGB(45, 48, 58)
+    UIStroke.Parent = Toggle
 
-		local ToggleLib = {
-			Root = Toggle	
-		};
+    local ToggleLib = {
+        Root = Toggle,
+        CheckMark = CheckMark,
+        UIStroke = UIStroke
+    };
 
-		ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 0,
-					BackgroundColor3 = NeverLose.AccentColor
-				})
+    ToggleLib.SetUI = LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            -- Checked state
+            TweenService:Create(Toggle, SlowyTween, {
+                BackgroundColor3 = NeverLose.AccentColor,
+                BackgroundTransparency = 0
+            }):Play()
+            
+            TweenService:Create(UIStroke, SlowyTween, {
+                Transparency = 0
+            }):Play()
+            
+            TweenService:Create(CheckMark, SlowyTween, {
+                TextTransparency = 0
+            }):Play()
+        else
+            -- Unchecked state
+            TweenService:Create(Toggle, SlowyTween, {
+                BackgroundColor3 = Color3.fromRGB(26, 28, 36),
+                BackgroundTransparency = 0
+            }):Play()
+            
+            TweenService:Create(UIStroke, SlowyTween, {
+                Transparency = 0.650
+            }):Play()
+            
+            TweenService:Create(CheckMark, SlowyTween, {
+                TextTransparency = 1
+            }):Play()
+        end;
+    end);
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 0,
-					Position = UDim2.new(0.7, 0, 0.5, 0)
-				})
-			else
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 0,
-					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-				})
+    ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            ToggleLib.SetUI(Config.Default);
+        else
+            ToggleLib.SetUI(false);
+            TweenService:Create(Toggle, SlowyTween, {
+                BackgroundTransparency = 1
+            }):Play()
+        end;
+    end);
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 0.500,
-					Position = UDim2.new(0.300000012, 0, 0.5, 0)
-				})
-			end;
-		end);
+    ToggleLib.SetUI(Config.Default);
+    ToggleLib.SetVisible(Signal:GetValue());
 
-		ToggleLib.SetVisible = LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				ToggleLib.SetUI(Config.Default);
-			else
-				NeverLose.PlayAnimate(Toggle,SlowyTween,{
-					BackgroundTransparency = 1,
-					BackgroundColor3 = Color3.fromRGB(10, 13, 21)
-				})
+    NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
+        Config.Default = not Config.Default;
 
-				NeverLose.PlayAnimate(Circle,SlowyTween,{
-					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-					BackgroundTransparency = 1,
-					Position = UDim2.new(0.300000012, 0, 0.5, 0)
-				})
-			end;
-		end);
+        ToggleLib.SetUI(Config.Default);
 
-		ToggleLib.SetUI(Config.Default);
-		ToggleLib.SetVisible(Signal:GetValue());
+        Config.Callback(Config.Default)
+    end))
 
-		NeverLose:CreateInput(Toggle , LPH_NO_VIRTUALIZE(function()
-			Config.Default = not Config.Default;
+    ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
 
-			ToggleLib.SetUI(Config.Default);
+    function ToggleLib:GetValue()
+        return Config.Default;
+    end;
 
-			Config.Callback(Config.Default)
-		end))
+    function ToggleLib:SetValue(v)
+        Config.Default = v;
 
-		ToggleLib.Signal = Signal:Connect(ToggleLib.SetVisible);
+        if Signal:GetValue() then
+            ToggleLib.SetUI(Config.Default);
+        end;
 
-		function ToggleLib:GetValue()
-			return Config.Default;
-		end;
+        Config.Callback(Config.Default)
+    end;
 
-		function ToggleLib:SetValue(v)
-			Config.Default = v;
+    if Config.Flag then
+        NeverLose.Flags[Config.Flag] = ToggleLib;
+    end;
 
-			if Signal:GetValue() then
-				ToggleLib.SetUI(Config.Default);
-			end;
-
-			Config.Callback(Config.Default)
-		end;
-
-		if Config.Flag then
-			NeverLose.Flags[Config.Flag] = ToggleLib;
-		end;
-
-		return ToggleLib;
-	end;
+    return ToggleLib;
+end;
 
 	function handle:AddSlider(Config)
-		Config = NeverLose:ProcessParams(Config , {
-			Default = 50,
-			Min = 0,
-			Max = 10,
-			Type = "",
-			Rounding = 0,
-			Nums = {},
-			Flag = nil,
-			Size = 125,
-			Callback = EmptyFunction,
-		});
+    Config = NeverLose:ProcessParams(Config , {
+        Default = 50,
+        Min = 0,
+        Max = 10,
+        Type = "",
+        Rounding = 0,
+        Nums = {},
+        Flag = nil,
+        Size = 125,
+        Callback = EmptyFunction,
+    });
 
-		local SliderLib = {};
+    local SliderLib = {};
 
-		SliderLib.GetSize = LPH_NO_VIRTUALIZE(function()
-			return (Config.Default - Config.Min) / (Config.Max - Config.Min);
-		end);
+    SliderLib.GetSize = LPH_NO_VIRTUALIZE(function()
+        return (Config.Default - Config.Min) / (Config.Max - Config.Min);
+    end);
 
-		local FullNumSize = TextService:GetTextSize(string.rep("0",(Config.Rounding + #tostring(Config.Max))+1)..tostring(Config.Type),10,Enum.Font.GothamMedium,Vector2.new(math.huge,math.huge));
+    local FullNumSize = TextService:GetTextSize(string.rep("0",(Config.Rounding + #tostring(Config.Max))+1)..tostring(Config.Type),10,Enum.Font.GothamMedium,Vector2.new(math.huge,math.huge));
 
-		SliderLib.MaximumSize = FullNumSize.X;
+    SliderLib.MaximumSize = FullNumSize.X;
 
-		if Config.Nums then
-			local nszie = 0;
+    if Config.Nums then
+        local nszie = 0;
 
-			for i,ns in next , Config.Nums do
-				local size = TextService:GetTextSize(string.rep("m",string.len(tostring(ns))),10,Enum.Font.GothamMedium,Vector2.new(math.huge,math.huge));
+        for i,ns in next , Config.Nums do
+            local size = TextService:GetTextSize(string.rep("m",string.len(tostring(ns))),10,Enum.Font.GothamMedium,Vector2.new(math.huge,math.huge));
 
-				if nszie < size.X then
-					nszie = size.X;
-				end
-			end;
+            if nszie < size.X then
+                nszie = size.X;
+            end
+        end;
 
-			if SliderLib.MaximumSize < nszie then
-				SliderLib.MaximumSize = nszie;
-			end;
-		end;
+        if SliderLib.MaximumSize < nszie then
+            SliderLib.MaximumSize = nszie;
+        end;
+    end;
 
-		local Slider = Instance.new("Frame")
-		local UICorner = Instance.new("UICorner")
-		local ValueFrame = Instance.new("Frame")
-		local UICorner_2 = Instance.new("UICorner")
-		local UIStroke = Instance.new("UIStroke")
-		local ValueLabel = Instance.new("TextBox")
-		local SlideMain = Instance.new("Frame")
-		local SlideFrame = Instance.new("Frame")
-		local UICorner_3 = Instance.new("UICorner")
-		local SlideMoving = Instance.new("Frame")
-		local UICorner_4 = Instance.new("UICorner")
-		local Frame = Instance.new("Frame")
-		local UICorner_5 = Instance.new("UICorner")
-		local boxSize = 2;
+    local Slider = Instance.new("Frame")
+    local UICorner = Instance.new("UICorner")
+    local ValueFrame = Instance.new("Frame")
+    local UICorner_2 = Instance.new("UICorner")
+    local UIStroke = Instance.new("UIStroke")
+    local ValueLabel = Instance.new("TextBox")
+    local SlideMain = Instance.new("Frame")
+    local SlideFrame = Instance.new("Frame")
+    local UICorner_3 = Instance.new("UICorner")
+    local SlideMoving = Instance.new("Frame")
+    local UICorner_4 = Instance.new("UICorner")
+    local Frame = Instance.new("Frame")  -- This is the dot
+    local UICorner_5 = Instance.new("UICorner")
+    local boxSize = 2;
 
-		Slider.Name = NeverLose.RandomString();
-		Slider.Parent = Handler
-		Slider.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
-		Slider.BackgroundTransparency = 1.000
-		Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Slider.BorderSizePixel = 0
-		Slider.ClipsDescendants = false
-		Slider.Size = UDim2.new(0, Config.Size, 0, 18)
-		Slider.ZIndex = ZINdex + 13
-		Slider.LayoutOrder = -(#Handler:GetChildren() + 5);
+    Slider.Name = NeverLose.RandomString();
+    Slider.Parent = Handler
+    Slider.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+    Slider.BackgroundTransparency = 1.000
+    Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Slider.BorderSizePixel = 0
+    Slider.ClipsDescendants = false
+    Slider.Size = UDim2.new(0, Config.Size, 0, 18)
+    Slider.ZIndex = ZINdex + 13
+    Slider.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(0, 4)
-		UICorner.Parent = Slider
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = Slider
 
-		ValueFrame.Name = NeverLose.RandomString();
-		ValueFrame.Parent = Slider
-		ValueFrame.AnchorPoint = Vector2.new(1, 0)
-		ValueFrame.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
-		ValueFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ValueFrame.BorderSizePixel = 0
-		ValueFrame.ClipsDescendants = true
-		ValueFrame.Position = UDim2.new(1, 0, 0, 0)
-		ValueFrame.Size = UDim2.new(0, SliderLib.MaximumSize + boxSize, 0, 18)
-		ValueFrame.ZIndex = ZINdex + 13
+    ValueFrame.Name = NeverLose.RandomString();
+    ValueFrame.Parent = Slider
+    ValueFrame.AnchorPoint = Vector2.new(1, 0)
+    ValueFrame.BackgroundColor3 = Color3.fromRGB(26, 28, 36)
+    ValueFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ValueFrame.BorderSizePixel = 0
+    ValueFrame.ClipsDescendants = true
+    ValueFrame.Position = UDim2.new(1, 0, 0, 0)
+    ValueFrame.Size = UDim2.new(0, SliderLib.MaximumSize + boxSize, 0, 18)
+    ValueFrame.ZIndex = ZINdex + 13
 
-		UICorner_2.CornerRadius = UDim.new(0, 4)
-		UICorner_2.Parent = ValueFrame
+    UICorner_2.CornerRadius = UDim.new(0, 4)
+    UICorner_2.Parent = ValueFrame
 
-		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(45, 48, 58)
-		UIStroke.Parent = ValueFrame
+    UIStroke.Transparency = 0.650
+    UIStroke.Color = Color3.fromRGB(45, 48, 58)
+    UIStroke.Parent = ValueFrame
 
-		ValueLabel.Name = NeverLose.RandomString();
-		ValueLabel.Parent = ValueFrame
-		ValueLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-		ValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		ValueLabel.BackgroundTransparency = 1.000
-		ValueLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		ValueLabel.BorderSizePixel = 0
-		ValueLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-		ValueLabel.Size = UDim2.new(1, 0, 1, 0)
-		ValueLabel.ZIndex = ZINdex + 14
-		ValueLabel.Font = Enum.Font.GothamMedium
-		ValueLabel.Text = tostring(Config.Default)..tostring(Config.Type);
-		ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-		ValueLabel.TextSize = 10.000
-		ValueLabel.ClearTextOnFocus = false;
-		ValueLabel.TextTransparency = 0.350
+    ValueLabel.Name = NeverLose.RandomString();
+    ValueLabel.Parent = ValueFrame
+    ValueLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    ValueLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    ValueLabel.BackgroundTransparency = 1.000
+    ValueLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    ValueLabel.BorderSizePixel = 0
+    ValueLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    ValueLabel.Size = UDim2.new(1, 0, 1, 0)
+    ValueLabel.ZIndex = ZINdex + 14
+    ValueLabel.Font = Enum.Font.GothamMedium
+    ValueLabel.Text = tostring(Config.Default)..tostring(Config.Type);
+    ValueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    ValueLabel.TextSize = 10.000
+    ValueLabel.ClearTextOnFocus = false;
+    ValueLabel.TextTransparency = 0.350
 
-		SlideMain.Name = NeverLose.RandomString();
-		SlideMain.Parent = Slider
-		SlideMain.AnchorPoint = Vector2.new(0, 0.5)
-		SlideMain.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		SlideMain.BackgroundTransparency = 1.000
-		SlideMain.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		SlideMain.BorderSizePixel = 0
-		SlideMain.Position = UDim2.new(0, 0, 0.5, 0)
-		SlideMain.Size = UDim2.new(1, -((SliderLib.MaximumSize + 11)), 0, 18)
-		SlideMain.ZIndex = ZINdex + 13
+    SlideMain.Name = NeverLose.RandomString();
+    SlideMain.Parent = Slider
+    SlideMain.AnchorPoint = Vector2.new(0, 0.5)
+    SlideMain.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SlideMain.BackgroundTransparency = 1.000
+    SlideMain.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SlideMain.BorderSizePixel = 0
+    SlideMain.Position = UDim2.new(0, 0, 0.5, 0)
+    SlideMain.Size = UDim2.new(1, -((SliderLib.MaximumSize + 11)), 0, 18)
+    SlideMain.ZIndex = ZINdex + 13
 
-		SlideFrame.Name = NeverLose.RandomString();
-		SlideFrame.Parent = SlideMain
-		SlideFrame.AnchorPoint = Vector2.new(0, 0.5)
-		SlideFrame.BackgroundColor3 = Color3.fromRGB(30, 29, 36)
-		SlideFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		SlideFrame.BorderSizePixel = 0
-		SlideFrame.Position = UDim2.new(0, 0, 0.5, 0)
-		SlideFrame.Size = UDim2.new(1, 0, 0, 5)
-		SlideFrame.ZIndex = ZINdex + 13
+    SlideFrame.Name = NeverLose.RandomString();
+    SlideFrame.Parent = SlideMain
+    SlideFrame.AnchorPoint = Vector2.new(0, 0.5)
+    SlideFrame.BackgroundColor3 = Color3.fromRGB(30, 29, 36)
+    SlideFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SlideFrame.BorderSizePixel = 0
+    SlideFrame.Position = UDim2.new(0, 0, 0.5, 0)
+    SlideFrame.Size = UDim2.new(1, 0, 0, 5)
+    SlideFrame.ZIndex = ZINdex + 13
 
-		UICorner_3.CornerRadius = UDim.new(1, 0)
-		UICorner_3.Parent = SlideFrame
+    UICorner_3.CornerRadius = UDim.new(1, 0)
+    UICorner_3.Parent = SlideFrame
 
-		SlideMoving.Name = NeverLose.RandomString();
-		SlideMoving.Parent = SlideFrame
-		SlideMoving.BackgroundColor3 = NeverLose.AccentColor
-		SlideMoving.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		SlideMoving.BorderSizePixel = 0
-		SlideMoving.Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
-		SlideMoving.ZIndex = ZINdex + 14
+    SlideMoving.Name = NeverLose.RandomString();
+    SlideMoving.Parent = SlideFrame
+    SlideMoving.BackgroundColor3 = NeverLose.AccentColor
+    SlideMoving.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    SlideMoving.BorderSizePixel = 0
+    SlideMoving.Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
+    SlideMoving.ZIndex = ZINdex + 14
 
-		UICorner_4.CornerRadius = UDim.new(1, 0)
-		UICorner_4.Parent = SlideMoving
+    UICorner_4.CornerRadius = UDim.new(1, 0)
+    UICorner_4.Parent = SlideMoving
 
-		Frame.Parent = SlideMoving
-		Frame.AnchorPoint = Vector2.new(1, 0.5)
-		Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		Frame.BorderSizePixel = 0
-		Frame.Position = UDim2.new(1, 5, 0.5, 0)
-		Frame.Size = UDim2.new(0, 10, 0, 10)
-		Frame.ZIndex = ZINdex + 15
+    -- Dot (Frame) - starts invisible
+    Frame.Parent = SlideMoving
+    Frame.AnchorPoint = Vector2.new(1, 0.5)
+    Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    Frame.BorderSizePixel = 0
+    Frame.Position = UDim2.new(1, 5, 0.5, 0)
+    Frame.Size = UDim2.new(0, 10, 0, 10)
+    Frame.ZIndex = ZINdex + 15
+    Frame.BackgroundTransparency = 1  -- Start invisible
 
-		UICorner_5.CornerRadius = UDim.new(1, 0)
-		UICorner_5.Parent = Frame
+    UICorner_5.CornerRadius = UDim.new(1, 0)
+    UICorner_5.Parent = Frame
 
-		local LoadText = LPH_NO_VIRTUALIZE(function()
-			if Config.Nums[Config.Default] then
-				ValueLabel.Text = Config.Nums[Config.Default]
+    local LoadText = LPH_NO_VIRTUALIZE(function()
+        if Config.Nums[Config.Default] then
+            ValueLabel.Text = Config.Nums[Config.Default]
+        else
+            ValueLabel.Text = tostring(Config.Default)..tostring(Config.Type);
+        end;
+    end);
 
-			else
-				ValueLabel.Text = tostring(Config.Default)..tostring(Config.Type);
+    ValueLabel.FocusLost:Connect(LPH_NO_VIRTUALIZE(function()
+        local OutVal = NeverLose:ParseInput(ValueLabel.Text , true);
+        if OutVal then
+            local rx = math.clamp(OutVal , Config.Min , Config.Max);
+            local Value = NeverLose.Rounding(rx,Config.Rounding);
 
-			end;
-		end);
+            if Value then
+                Config.Default = Value;
 
-		ValueLabel.FocusLost:Connect(LPH_NO_VIRTUALIZE(function()
-			local OutVal = NeverLose:ParseInput(ValueLabel.Text , true);
-			if OutVal then
-				local rx = math.clamp(OutVal , Config.Min , Config.Max);
-				local Value = NeverLose.Rounding(rx,Config.Rounding);
+                TweenService:Create(SlideMoving , ManualTween ,{
+                    Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
+                }):Play();
 
-				if Value then
-					Config.Default = Value;
+                LoadText();
 
-					TweenService:Create(SlideMoving , ManualTween ,{
-						Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
-					}):Play();
+                Config.Callback(Config.Default)
+            else
+                LoadText();
+            end;
 
-					LoadText();
+        else
+            LoadText()
+        end;
+    end));
 
-					Config.Callback(Config.Default)
-				else
-					LoadText();
-				end;
+    SliderLib.SetRender = LPH_NO_VIRTUALIZE(function(value)
+        if value then
+            NeverLose.PlayAnimate(ValueFrame,SlowyTween,{
+                BackgroundTransparency = 0,
+                Size = UDim2.new(0, SliderLib.MaximumSize + boxSize, 0, 18)
+            });
 
-			else
-				LoadText()
-			end;
-		end));
+            NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+                Transparency = 0.650
+            });
 
-		SliderLib.SetRender = LPH_NO_VIRTUALIZE(function(value)
-			if value then
-				NeverLose.PlayAnimate(ValueFrame,SlowyTween,{
-					BackgroundTransparency = 0,
-					Size = UDim2.new(0, SliderLib.MaximumSize + boxSize, 0, 18)
-				});
+            NeverLose.PlayAnimate(ValueLabel,SlowyTween,{
+                TextTransparency = 0.350
+            });
 
-				NeverLose.PlayAnimate(UIStroke,SlowyTween,{
-					Transparency = 0.650
-				});
+            NeverLose.PlayAnimate(SlideFrame,SlowyTween,{
+                BackgroundTransparency = 0
+            });
 
-				NeverLose.PlayAnimate(ValueLabel,SlowyTween,{
-					TextTransparency = 0.350
-				});
+            NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
+                BackgroundTransparency = 0,
+                Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
+            });
 
-				NeverLose.PlayAnimate(SlideFrame,SlowyTween,{
-					BackgroundTransparency = 0
-				});
+            -- Keep dot hidden initially
+            NeverLose.PlayAnimate(Frame,SlowyTween,{
+                BackgroundTransparency = 1
+            });
+        else
+            NeverLose.PlayAnimate(ValueFrame,SlowyTween,{
+                BackgroundTransparency = 1,
+            });
 
-				NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
-					BackgroundTransparency = 0,
-					Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
-				});
+            NeverLose.PlayAnimate(UIStroke,SlowyTween,{
+                Transparency = 1
+            });
 
-				NeverLose.PlayAnimate(Frame,SlowyTween,{
-					BackgroundTransparency = 0
-				});
-			else
-				NeverLose.PlayAnimate(ValueFrame,SlowyTween,{
-					BackgroundTransparency = 1,
-				});
+            NeverLose.PlayAnimate(ValueLabel,SlowyTween,{
+                TextTransparency = 1
+            });
 
-				NeverLose.PlayAnimate(UIStroke,SlowyTween,{
-					Transparency = 1
-				});
+            NeverLose.PlayAnimate(SlideFrame,SlowyTween,{
+                BackgroundTransparency = 1
+            });
 
-				NeverLose.PlayAnimate(ValueLabel,SlowyTween,{
-					TextTransparency = 1
-				});
+            NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
+                BackgroundTransparency = 1,
+                Size = UDim2.new(0, 0, 1, 0)
+            });
 
-				NeverLose.PlayAnimate(SlideFrame,SlowyTween,{
-					BackgroundTransparency = 1
-				});
+            NeverLose.PlayAnimate(Frame,SlowyTween,{
+                BackgroundTransparency = 1
+            });
+        end;
+    end);
 
-				NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
-					BackgroundTransparency = 1,
-					Size = UDim2.new(0, 0, 1, 0)
-				});
+    SliderLib.SetRender(Signal:GetValue());
+    SliderLib.Signal = Signal:Connect(SliderLib.SetRender);
 
-				NeverLose.PlayAnimate(Frame,SlowyTween,{
-					BackgroundTransparency = 1
-				});
-			end;
-		end);
+    -- Function to show/hide dot with slower tween
+    local function SetDotVisibility(visible)
+        local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)  -- Slower tween (0.3s)
+        if visible then
+            TweenService:Create(Frame, tweenInfo, {
+                BackgroundTransparency = 0
+            }):Play();
+        else
+            TweenService:Create(Frame, tweenInfo, {
+                BackgroundTransparency = 1
+            }):Play();
+        end
+    end
 
-		SliderLib.SetRender(Signal:GetValue());
-		SliderLib.Signal = Signal:Connect(SliderLib.SetRender);
+    local Update = function(Input)
+        local SizeScale = math.clamp((((Input.Position.X) - SlideMain.AbsolutePosition.X) / SlideMain.AbsoluteSize.X), 0, 1);
+        local Main = ((Config.Max - Config.Min) * SizeScale) + Config.Min;
+        local Value = NeverLose.Rounding(Main,Config.Rounding);
+        local PositionX = UDim2.fromScale(SizeScale, 1);
+        local Size = ((Value - Config.Min) / (Config.Max - Config.Min)) + 0.02;
 
-		local Update = function(Input)
-			local SizeScale = math.clamp((((Input.Position.X) - SlideMain.AbsolutePosition.X) / SlideMain.AbsoluteSize.X), 0, 1);
-			local Main = ((Config.Max - Config.Min) * SizeScale) + Config.Min;
-			local Value = NeverLose.Rounding(Main,Config.Rounding);
-			local PositionX = UDim2.fromScale(SizeScale, 1);
-			local Size = ((Value - Config.Min) / (Config.Max - Config.Min)) + 0.02;
+        Config.Default = Value;
 
-			Config.Default = Value;
+        TweenService:Create(SlideMoving , ManualTween ,{
+            Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
+        }):Play();
 
-			TweenService:Create(SlideMoving , ManualTween ,{
-				Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
-			}):Play();
+        LoadText()
+        Config.Callback(Value)
+    end;
 
-			LoadText()
+    local IsHold = false;
 
+    -- Track if mouse is over the slider
+    local function IsMouseOverSlider()
+        return NeverLose:IsMouseOverFrame(SlideMain)
+    end
 
-			Config.Callback(Value)
-		end;
+    -- Mouse button down event on SlideMain
+    SlideMain.InputBegan:Connect(LPH_NO_VIRTUALIZE(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            IsHold = true
+            SetDotVisibility(true)  -- Show dot when starting to drag
+            Update(Input)
+        end
+    end))
 
-		local IsHold = false;
+    -- Mouse button up event on SlideMain
+    SlideMain.InputEnded:Connect(LPH_NO_VIRTUALIZE(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+            IsHold = false
+            SetDotVisibility(false)  -- Hide dot when releasing
+        end
+    end))
 
-		do
-			SlideMain.InputBegan:Connect(LPH_NO_VIRTUALIZE(function(Input)
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-					IsHold = true
-					Update(Input)
-				end
-			end))
+    -- Global input changed to track mouse movement
+    UserInputService.InputChanged:Connect(LPH_NO_VIRTUALIZE(function(Input)
+        if IsHold then
+            if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
+                Update(Input)
+            end
+        end
+    end))
 
-			SlideMain.InputEnded:Connect(LPH_NO_VIRTUALIZE(function(Input)
-				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
-					if UserInputService.TouchEnabled then
-						if not NeverLose:IsMouseOverFrame(SlideMain) then
-							IsHold = false
-						end;
-					else
-						IsHold = false
-					end;
-				end
-			end))
+    -- Global input ended to catch releases outside the slider
+    UserInputService.InputEnded:Connect(LPH_NO_VIRTUALIZE(function(Input)
+        if IsHold then
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+                IsHold = false
+                SetDotVisibility(false)  -- Hide dot when releasing anywhere
+            end
+        end
+    end))
 
-			UserInputService.InputChanged:Connect(LPH_NO_VIRTUALIZE(function(Input)
-				if IsHold then
-					if (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch)  then
-						if UserInputService.TouchEnabled then
-							if not NeverLose:IsMouseOverFrame(SlideMain) then
-								IsHold = false
-							else
-								Update(Input)
-							end;
-						else
-							Update(Input)
-						end;
-					end;
-				end;
-			end));
-		end;
+    -- Handle focus loss (dragging outside slider)
+    SlideMain.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
+        if IsHold and not UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+            IsHold = false
+            SetDotVisibility(false)
+        end
+    end))
 
-		function SliderLib:GetValue()
-			return Config.Default;
-		end;
+    function SliderLib:GetValue()
+        return Config.Default;
+    end;
 
-		function SliderLib:SetValue(v)
-			Config.Default = v;
+    function SliderLib:SetValue(v)
+        Config.Default = v;
 
-			if Signal:GetValue() then
-				NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
-					BackgroundTransparency = 0,
-					Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
-				});
-			end;
+        if Signal:GetValue() then
+            NeverLose.PlayAnimate(SlideMoving,SlowyTween,{
+                BackgroundTransparency = 0,
+                Size = UDim2.new(SliderLib.GetSize(), 0, 1, 0)
+            });
+        end;
 
-			LoadText()
+        LoadText()
+        Config.Callback(Config.Default);
+    end;
 
-			Config.Callback(Config.Default);
-		end;
+    if Config.Flag then
+        NeverLose.Flags[Config.Flag] = SliderLib;
+    end;
 
-		if Config.Flag then
-			NeverLose.Flags[Config.Flag] = SliderLib;
-		end;
-
-		return SliderLib;
-	end;
+    return SliderLib;
+end;
 
 	function handle:AddOption(GearIcon)
 		local Option = Instance.new("Frame")
