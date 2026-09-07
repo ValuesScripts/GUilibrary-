@@ -5,8 +5,6 @@ do
 	getfenv()[Constant] = getfenv()[Constant] or function(f) return f end;
 end;
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/ValuesScripts/ValueScript/refs/heads/main/ValueScriptHolder"))()
-
 cloneref = cloneref or function(i) return i end;
 gethui = gethui or get_hidden_gui;
 getcustomasset = getcustomasset or getsynasset;
